@@ -1,7 +1,15 @@
 //Creación de la entidad Usuario (Profesor o estudiante)
 
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-@Entity() 
+
+// Definición de los roles posibles para el usuario
+export enum RolUsuario {
+    ESTUDIANTE = 'estudiante',
+    PROFESOR = 'profesor',
+}
+
+// Definición de la entidad Usuario
+@Entity('usuario') 
 export class Usuario {
     // Columna de clave primaria auto-generada
     @PrimaryGeneratedColumn() 
@@ -23,8 +31,8 @@ export class Usuario {
     @Column(
         { 
         type:'enum',
-        enum: ['estudiante', 'profesor'],
+        enum: RolUsuario,
         }
     )
-    rol: 'estudiante' | 'profesor';
+    rol: RolUsuario;
 }

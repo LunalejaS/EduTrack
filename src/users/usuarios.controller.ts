@@ -2,6 +2,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/crate-usuario.dto';
+import { Usuario } from 'src/entities/usuario.entity';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -11,8 +12,8 @@ export class UsuariosController {
     //Acciones CRUD basicas
     //Crear un nuevo usuario
     @Post()
-    create(@Body() data: CreateUsuarioDto){
-        return this.usuariosService.create(data);
+    async create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<Usuario>{
+        return this.usuariosService.create(createUsuarioDto);
     }
     //Obtener todos los usuarios
     @Get()
