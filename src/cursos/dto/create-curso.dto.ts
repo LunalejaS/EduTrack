@@ -1,23 +1,24 @@
-//DTO para crear un nuevo curso
-
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+//DTO para la creación de un nuevo curso
+import { IsInt, IsNotEmpty, IsString, Min } from "class-validator";
 
 export class CreateCursoDto {
-    // Nombre del curso (no puede estar vacío)
+    // Nombre del curso
     @IsString()
     @IsNotEmpty()
-    nombre_curso: string;
+    nombre: string;
 
-    // Descripción del curso (no puede estar vacío)
+    // Descripción del curso
     @IsString()
     @IsNotEmpty()
     descripcion: string;
 
-    // Duración del curso en horas (debe ser un entero)
+    // Duración del curso en horas
     @IsInt()
+    @Min(1)
     duracion_horas: number;
 
-    // ID del profesor que imparte el curso (debe ser un entero)
+    // ID del profesor que imparte el curso
     @IsInt()
-    profesorId: number;    
+    @Min(1)
+    profesorId: number;
 }
