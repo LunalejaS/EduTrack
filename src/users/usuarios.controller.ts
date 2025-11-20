@@ -1,7 +1,7 @@
 //Controlador de usuarios
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/crate-usuario.dto';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { Usuario } from 'src/entities/usuario.entity';
 
 @Controller('usuarios')

@@ -3,7 +3,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Profesor } from "src/entities/profesor.entity";
-import { Usuario } from "src/entities/usuario.entity";
+import { RolUsuario, Usuario } from "src/entities/usuario.entity";
 import { Repository } from "typeorm";
 import { CreateProfesoreDto } from "./dto/create-profesore.dto";
 import { UpdateProfesoreDto } from "./dto/update-profesore.dto";
@@ -31,7 +31,7 @@ export class ProfesoresService {
     if (!usuario) {
       throw new NotFoundException(`El usuario con id ${usuarioId} no existe`);
     }
-    if (usuario.rol !== 'profesor') {
+    if (usuario.rol !== RolUsuario.PROFESOR) {
       throw new BadRequestException(`El usuario con id ${usuarioId} no es un profesor`);
     }
 

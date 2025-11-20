@@ -6,11 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from '../entities/usuario.entity';
 import { Profesor } from 'src/entities/profesor.entity';
 import { Estudiante } from 'src/entities/estudiante.entity';
+import { ProfesoresModule } from './profesores/profesores.module';
+import { EstudiantesModule } from './estudiantes/estudiantes.module';
 
 @Module({
   //Importamos el controlador y el servicio de usuarios
   controllers: [UsuariosController],
   providers: [UsuariosService],
-  imports: [TypeOrmModule.forFeature([Usuario, Profesor, Estudiante])], //Importamos la entidad Usuario
+  imports: [TypeOrmModule.forFeature([Usuario, Profesor, Estudiante]), ProfesoresModule, EstudiantesModule], //Importamos la entidad Usuario
 })
 export class UsuariosModule {}
