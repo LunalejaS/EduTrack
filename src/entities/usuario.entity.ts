@@ -1,5 +1,6 @@
 //Creación de la entidad Usuario (Profesor o estudiante)
 
+import { Exclude } from "class-transformer";
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 // Definición de los roles posibles para el usuario
@@ -25,6 +26,7 @@ export class Usuario {
 
     // Columna para la contraseña
     @Column()
+    @Exclude()
     contrasena: string;
 
     // Columna para el rol (estudiante o profesor)

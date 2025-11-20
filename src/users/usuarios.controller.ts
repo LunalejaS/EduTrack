@@ -1,9 +1,10 @@
 //Controlador de usuarios
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { Usuario } from 'src/entities/usuario.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('usuarios')
 export class UsuariosController {
     //Inyectamos el servicio de usuarios
