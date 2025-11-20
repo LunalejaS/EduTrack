@@ -7,6 +7,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 export enum RolUsuario {
     ESTUDIANTE = 'estudiante',
     PROFESOR = 'profesor',
+    ADMINISTRADOR = 'administrador',
 }
 
 // Definición de la entidad Usuario
@@ -37,4 +38,5 @@ export class Usuario {
         }
     )
     rol: RolUsuario;
+    administradores: any;
 }
