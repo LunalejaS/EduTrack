@@ -1,124 +1,70 @@
-# EduTrack - Backend NestJS
+# 💻 EduTrack — Sistema de Gestión Académica
 
-**Autor:** Luna Leja  
-**Fecha:** 18/11/2025  
-**Versión:** 0.1 - Primera entrega
+**Autor:** Luna A. Sandoval 🩷
 
----
+**Fecha:** 21/11/2025 
 
-## Descripción
-EduTrack es un sistema de gestión académica que permite manejar usuarios (profesores y estudiantes), cursos e inscripciones.  
-Actualmente, el backend está desarrollado en **NestJS** con **TypeORM** y **PostgreSQL** como base de datos.
+**Versión:** 1.0
 
 ---
 
-## Tecnologías
-- Node.js / NestJS
+## ✨ Descripción
+Backend construido con NestJS, TypeORM y PostgreSQL, diseñado para gestionar usuarios, profesores, estudiantes, cursos e inscripciones.
+Incluye documentación con Swagger, validaciones con class-validator, DTOs estructurados y arquitectura basada en Módulo–Servicio–Controlador.
+
+---
+
+## ✨ Tecnologías utilizadas
+- Node.js v11.01.10
+- NestJS
 - TypeScript
-- PostgreSQL
 - TypeORM
-- class-validator (para validaciones DTO)
-- bcrypt (para encriptar contraseñas)
+- PostgreSQL
+- Swagger
+- class-validator / class-transformer
 
 ---
 
-## Estructura del proyecto
+## ✨ Requisitos previos
+Antes de iniciar, asegúrate de tener instalado:
+1. Node.js (v11 o mayor)
+2. NPM
+3. PostgreSQL
+4. Git
+5. Nest CLI
+   
+   `npm i -g @nestjs/cli`
+
+---
+
+## Instalación
+1. Clona el repositorio
+   
+   `git clone <url-del-repo>`
+   
+   `cd EduTrack`
+3. Instala dependencias
+   
+   `npm install`
+5. Configura tu archivo `.env`
+   
+   Usa el archivo `.env.template` incluido.
+
+   
+## 🔐 Variables de Entorno
+Crea un archivo `.env` basado en:
+### `.env template`
 ```
-src/
-|-- entities/
-|   |-- usuario.entity.ts
-|   |-- profesor.entity.ts
-|   |-- estudiante.entity.ts
-|   |-- curso.entity.ts
-|   `-- inscripcion.entity.ts
-|-- users/
-|   |-- dto/
-|   |   |-- create-usuario.dto.ts
-|   |   |-- update-usuario.dto.ts
-|   |   |-- update-estudiante.dto.ts
-|   |   `-- update-profesor.dto.ts
-|   |-- usuarios.controller.ts
-|   `-- usuarios.service.ts
-|-- cursos/
-|   `-- dto/
-|       `-- create-curso.dto.ts
-|-- inscripciones/
-|   `-- dto/
-|       `-- create-inscripcion.dto.ts
-`-- app.module.ts
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+ADMIN_EMAILS=admin1@test.com,admin2@test.com
+PORT=3000
 ```
 
 ---
 
-## Entidades implementadas
-
-### Usuario
-- `id`
-- `nombre_completo`
-- `email` (único)
-- `contrasena` (hasheada)
-- `rol` (`estudiante` / `profesor`)
-
-### Profesor (extiende Usuario)
-- `id`
-- `especialidad`
-- relación con Usuario
-
-### Estudiante (extiende Usuario)
-- `id`
-- `ano_ingreso`
-- relación con Usuario
-
-### Curso
-- `id`
-- `nombre`
-- `descripcion`
-- `creditos`
-- `profesor_id` (relación con Profesor)
-
-### Inscripción
-- `id`
-- `fecha_inscripcion`
-- `nota`
-- `estudiante_id` (relación con Estudiante)
-- `curso_id` (relación con Curso)
-
----
-
-## DTOs implementados
-- `CreateUsuarioDto`
-- `UpdateUsuarioDto`
-- `UpdateEstudianteDto`
-- `UpdateProfesorDto`
-- `CreateCursoDto`
-- `CreateInscripcionDto`
-
----
-
-## Configuración
-
-1. Instalar dependencias:
-   ```bash```
-  `npm install`
-3. Configurar archivo .env con los datos de PostgreSQL:
-  `DB_HOST=localhost
-  DB_PORT=5432
-  DB_USERNAME=tu_usuario
-  DB_PASSWORD=tu_contraseña
-  DB_NAME=nombre_base`
-4. Levantar la aplicación:
-  ```bash```
-  `npm run start:dev`
-    La app correrá en `http://localhost:3000`
-
----
-
-## Endpoints disponibles (Usuarios)
-- `POST /usuarios`
-- `GET /usuarios`
-- `GET /usuarios/:id`
-- `PATCH /usuarios/:id`
-- `DELETE /usuarios/:id`
-- 
-- Los endpoints de Curso e Inscripción se implementarán en la siguiente entrega.
 
