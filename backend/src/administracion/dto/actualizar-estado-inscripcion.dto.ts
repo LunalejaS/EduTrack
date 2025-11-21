@@ -1,7 +1,12 @@
 //DTO para actualizar el estado de la inscripcion
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsNumber, IsOptional, IsPositive } from "class-validator";
-import { EstadoInscripcion } from "src/entities/inscripcion.entity";
+
+export enum EstadoInscripcion {
+    PENDIENTE = 'pendiente',
+    APROBADA = 'aprobado',
+    RECHAZADA = 'rechazado',
+}
 
 export class ActualizarEstadoInscropcionDto{
     //Inscripción a actualizar (id)
@@ -19,6 +24,6 @@ export class ActualizarEstadoInscropcionDto{
     //Estado inscripición
     @ApiPropertyOptional()
     @IsOptional()
-    @IsEnum(EstadoInscripcion)
+    @IsEnum(EstadoInscripcion, { message: 'estado no válido' })
     estado?: EstadoInscripcion;
 }

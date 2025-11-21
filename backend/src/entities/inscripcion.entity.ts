@@ -3,13 +3,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Estudiante } from "./estudiante.entity";
 import { Curso } from "./curso.entity";
-
-//Definición de estados posibles de la inscripción
-export enum EstadoInscripcion {
-    PENDIENTE='pendiente',
-    APROBADO='aprobado',
-    REPROBADO='reprobado'
-}
+import { EstadoInscripcion } from "src/administracion/dto/actualizar-estado-inscripcion.dto";
 
 @Entity()
 export class Inscripcion {
@@ -29,7 +23,7 @@ export class Inscripcion {
     @Column({
         type: 'enum',
         enum: EstadoInscripcion,
-        default: EstadoInscripcion.PENDIENTE,
+        default: EstadoInscripcion.PENDIENTE
     })
     estado: EstadoInscripcion;
 

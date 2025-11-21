@@ -74,11 +74,13 @@ export class InscripcionesService {
   }
 
   //Actualizar una inscripción
-  async update(id: number, updateInscripcioneDto: UpdateInscripcioneDto) {
-    const inscripcion = await this.findOne(id);
-    Object.assign(inscripcion, updateInscripcioneDto);
-    
-    return this.inscripcionRepository.save(inscripcion);
+  async update(id: number, dto: UpdateInscripcioneDto) {
+    const insc = await this.inscripcionRepository.findOne({ where: { id } });
+    if (!insc) throw new NotFoundException('Inscripción no encontrada');
+
+    if (dto.nota !== undefined) insc.nota = dto.nota;
+
+    return this.inscripcionRepository.save(insc);
   }
 
   //Eliminar una inscripción
