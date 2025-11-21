@@ -4,12 +4,13 @@ import { IsPositive, IsInt } from "class-validator";
 
 export class AsignarCursoDto {
     //Id curso a asiganr profesor
-    @ApiProperty({ example: 3})
+    @ApiProperty()
     @IsInt()
     @IsPositive()
     idCurso: number;
 
     //Profesor (id)
+    @ApiProperty()
     @IsInt()
     @IsPositive()
     idProfesor: number;

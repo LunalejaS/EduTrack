@@ -30,18 +30,27 @@ export class InscripcionesController {
   }
 
   //Obtener una inscripción por ID
+  @ApiOperation({summary: 'Obtener Inscripción por su ID'})
+  @ApiResponse({status: 200, description: 'Inscripción encontrada'})
+  @ApiResponse({status: 404, description: 'Inscripción no encontrada'})
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.inscripcionesService.findOne(id);
   }
 
   //Actualizar una inscripción
+  @ApiOperation({summary: 'Actualizar una Inscripción'})
+  @ApiResponse({status: 200, description: 'Inscripción Actualizado'})
+  @ApiResponse({status: 404, description: 'Inscripción no encontrado'})
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateInscripcioneDto: UpdateInscripcioneDto) {
     return this.inscripcionesService.update(id, updateInscripcioneDto);
   }
 
   //Eliminar una inscripción
+  @ApiOperation({summary: 'Eliminar una inscripción'})
+  @ApiResponse({status: 200, description: 'Inscripción eliminada con éxito'})
+  @ApiResponse({status: 404, description: 'Inscripción no encontrada'})
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.inscripcionesService.remove(id);
