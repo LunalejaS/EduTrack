@@ -75,6 +75,7 @@ const utils = {
 
     // Escapar HTML para prevenir XSS
     escapeHtml(text) {
+        if (text == null) return ' ';
         const map = {
             '&': '&amp;',
             '<': '&lt;',

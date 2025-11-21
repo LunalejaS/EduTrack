@@ -224,7 +224,7 @@ const adminModule = {
         }
 
         const data = {
-            inscripcion_id: inscripcionId,
+            idInscription: inscripcionId,
             estado: estado
         };
 

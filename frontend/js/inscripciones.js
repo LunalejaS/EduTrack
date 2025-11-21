@@ -204,10 +204,14 @@ const inscripcionesModule = {
 
         if (!id) {
             // Nueva inscripción
-            data.estudiante_id = parseInt(document.getElementById('inscripcionEstudiante').value);
-            data.curso_id = parseInt(document.getElementById('inscripcionCurso').value);
+            data.estudianteId = parseInt(document.getElementById('inscripcionEstudiante').value);
+            data.cursoId = parseInt(document.getElementById('inscripcionCurso').value);
         } else {
             // Editar inscripción
+            const estadoInput = document.getElementById('inscripcionEstado');
+            if (estadoInput) {
+        data.estado = estadoInput.value;
+            }
             data.estado = document.getElementById('inscripcionEstado').value;
             const notaValue = document.getElementById('inscripcionNota').value;
             data.nota = notaValue ? parseFloat(notaValue) : null;
@@ -268,7 +272,6 @@ const inscripcionesModule = {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline close-modal">Cerrar</button>
                 </div>
             `;
 

@@ -116,74 +116,74 @@ const cursosModule = {
     },
 
     showCursoModal(curso = null) {
-        const isEdit = !!curso;
-        const modal = document.getElementById('modal');
-        const modalContent = document.getElementById('modalContent');
+    const isEdit = !!curso;
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
 
-        modalContent.innerHTML = `
-            <div class="modal-header">
-                <h2>${isEdit ? 'Editar Curso' : 'Nuevo Curso'}</h2>
-                <button class="close-modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="cursoForm">
-                    <div class="form-group">
-                        <label for="cursoNombre">
-                            <i class="fas fa-book"></i> Nombre del Curso
-                        </label>
-                        <input type="text" id="cursoNombre" required 
-                               value="${curso ? utils.escapeHtml(curso.nombre) : ''}"
-                               placeholder="Ej: Matemáticas Avanzadas">
-                    </div>
-                    <div class="form-group">
-                        <label for="cursoDescripcion">
-                            <i class="fas fa-align-left"></i> Descripción
-                        </label>
-                        <textarea id="cursoDescripcion" required 
-                                  placeholder="Describe el contenido del curso...">${curso ? utils.escapeHtml(curso.descripcion) : ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="cursoDuracion">
-                            <i class="fas fa-clock"></i> Duración (horas)
-                        </label>
-                        <input type="number" id="cursoDuracion" required min="1"
-                               value="${curso ? curso.duracion_horas : ''}"
-                               placeholder="Ej: 40">
-                    </div>
-                    <div class="form-group">
-                        <label for="cursoProfesor">
-                            <i class="fas fa-chalkboard-teacher"></i> Profesor
-                        </label>
-                        <select id="cursoProfesor" required>
-                            <option value="">Seleccionar profesor...</option>
-                            ${this.profesores.map(prof => `
-                                <option value="${prof.id}" 
-                                        ${curso && curso.profesor?.id === prof.id ? 'selected' : ''}>
-                                    ${utils.escapeHtml(prof.nombre_completo)}
-                                </option>
-                            `).join('')}
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline close-modal">Cancelar</button>
-                <button class="btn btn-primary" id="saveCursoBtn">
-                    <i class="fas fa-save"></i> ${isEdit ? 'Actualizar' : 'Crear'}
-                </button>
-            </div>
-        `;
+    // Valores seguros para el formulario
+    const nombreCurso = utils.escapeHtml(curso?.nombre || '');
+    const descripcionCurso = utils.escapeHtml(curso?.descripcion || '');
+    const duracion = curso?.duracion_horas ?? '';
+    const profesorId = curso?.profesor?.id ?? '';
+
+    // Generar opciones de select de profesores
+    const profesorOptions = this.profesores.length > 0 
+        ? this.profesores.map(prof => `
+            <option value="${prof.id}" ${prof.id == profesorId ? 'selected' : ''}>
+                ${utils.escapeHtml(prof.nombre_completo || 'Sin nombre')}
+            </option>
+        `).join('')
+        : '<option value="">No hay profesores disponibles</option>';
+
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h2>${isEdit ? 'Editar Curso' : 'Nuevo Curso'}</h2>
+            <button class="close-modal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="cursoForm">
+                <div class="form-group">
+                    <label for="cursoNombre"><i class="fas fa-book"></i> Nombre del Curso</label>
+                    <input type="text" id="cursoNombre" required 
+                           value="${nombreCurso}" placeholder="Ej: Matemáticas Avanzadas">
+                </div>
+                <div class="form-group">
+                    <label for="cursoDescripcion"><i class="fas fa-align-left"></i> Descripción</label>
+                    <textarea id="cursoDescripcion" required placeholder="Describe el contenido del curso...">${descripcionCurso}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cursoDuracion"><i class="fas fa-clock"></i> Duración (horas)</label>
+                    <input type="number" id="cursoDuracion" required min="1" value="${duracion}" placeholder="Ej: 40">
+                </div>
+                <div class="form-group">
+                    <label for="cursoProfesor"><i class="fas fa-chalkboard-teacher"></i> Profesor</label>
+                    <select id="cursoProfesor" required>
+                        <option value="">Seleccionar profesor...</option>
+                        ${profesorOptions}
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline close-modal">Cancelar</button>
+            <button class="btn btn-primary" id="saveCursoBtn">
+                <i class="fas fa-save"></i> ${isEdit ? 'Actualizar' : 'Crear'}
+            </button>
+        </div>
+    `;
 
         modal.classList.add('active');
 
-        // Event listeners
+        // Cerrar modal
         modalContent.querySelectorAll('.close-modal').forEach(btn => {
             btn.addEventListener('click', () => modal.classList.remove('active'));
         });
 
-        document.getElementById('saveCursoBtn').addEventListener('click', () => {
-            this.saveCurso(curso?.id);
-        });
+        // Guardar curso
+        const saveBtn = document.getElementById('saveCursoBtn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => this.saveCurso(curso?.id));
+        }
     },
 
     async saveCurso(id = null) {
@@ -246,7 +246,6 @@ const cursosModule = {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline close-modal">Cerrar</button>
                 </div>
             `;
 

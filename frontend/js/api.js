@@ -50,7 +50,9 @@ class ApiService {
         }
     }
 
-    // === CURSOS ===
+    // =====================================================================
+    // === CURSOS ===========================================================
+    // =====================================================================
     async getCursos() {
         if (this.useMock) {
             return this.mockRequest(() => window.getCleanData(window.mockDB.cursos));
@@ -132,12 +134,14 @@ class ApiService {
         });
     }
 
-    // === USUARIOS ===
+    // =====================================================================
+    // === USUARIOS  (ARREGLADO: /usuarios) ================================
+    // =====================================================================
     async getUsuarios() {
         if (this.useMock) {
             return this.mockRequest(() => window.getCleanData(window.mockDB.usuarios));
         }
-        return this.request('/users');
+        return this.request('/usuarios'); // FIX
     }
 
     async getUsuario(id) {
@@ -148,7 +152,7 @@ class ApiService {
                 return window.getCleanData(usuario);
             });
         }
-        return this.request(`/users/${id}`);
+        return this.request(`/usuarios/${id}`); // FIX
     }
 
     async createUsuario(data) {
@@ -164,11 +168,10 @@ class ApiService {
                 
                 window.mockDB.usuarios.push(nuevoUsuario);
                 
-                // Si es estudiante o profesor, crear registro adicional
-                if (data.rol === 'estudiante' && data.ano_ingreso) {
+                if (data.rol === 'estudiante' && data.ano_ingreso !== undefined && data.ano_ingreso !== null) {
                     window.mockDB.estudiantes.push({
                         id: nuevoUsuario.id,
-                        ano_ingreso: data.ano_ingreso,
+                        ano_ingreso: parseInt(data.ano_ingreso),
                         usuario: nuevoUsuario,
                         inscripciones: []
                     });
@@ -184,7 +187,8 @@ class ApiService {
                 return window.getCleanData(nuevoUsuario);
             });
         }
-        return this.request('/users', {
+
+        return this.request('/usuarios', { // FIX
             method: 'POST',
             body: JSON.stringify(data),
         });
@@ -203,7 +207,8 @@ class ApiService {
                 return window.getCleanData(usuario);
             });
         }
-        return this.request(`/users/${id}`, {
+
+        return this.request(`/usuarios/${id}`, { // FIX
             method: 'PATCH',
             body: JSON.stringify(data),
         });
@@ -217,7 +222,6 @@ class ApiService {
                 
                 window.mockDB.usuarios.splice(index, 1);
                 
-                // Eliminar de estudiantes o profesores si aplica
                 const estIndex = window.mockDB.estudiantes.findIndex(e => e.id == id);
                 if (estIndex !== -1) window.mockDB.estudiantes.splice(estIndex, 1);
                 
@@ -227,12 +231,15 @@ class ApiService {
                 return { message: `Usuario con ID ${id} eliminado` };
             });
         }
-        return this.request(`/users/${id}`, {
+
+        return this.request(`/usuarios/${id}`, { // FIX
             method: 'DELETE',
         });
     }
 
-    // === INSCRIPCIONES ===
+    // =====================================================================
+    // === INSCRIPCIONES ====================================================
+    // =====================================================================
     async getInscripciones() {
         if (this.useMock) {
             return this.mockRequest(() => window.getCleanData(window.mockDB.inscripciones));
@@ -271,7 +278,6 @@ class ApiService {
                 
                 window.mockDB.inscripciones.push(nuevaInscripcion);
                 
-                // Actualizar referencias
                 if (!curso.inscripciones) curso.inscripciones = [];
                 curso.inscripciones.push(nuevaInscripcion);
                 
@@ -320,11 +326,12 @@ class ApiService {
         });
     }
 
-    // === ADMINISTRACIÓN ===
+    // =====================================================================
+    // === ADMINISTRACIÓN ===================================================
+    // =====================================================================
     async asignarCurso(email, data) {
         if (this.useMock) {
             return this.mockRequest(() => {
-                // Validar que el email sea de un admin
                 const adminEmails = ['ana.garcia@edutrack.com', 'adminEdutrack@test.com', 'adminEdutrack2@test.com'];
                 if (!adminEmails.includes(email)) {
                     throw new Error('No tienes permisos de administrador');
@@ -353,13 +360,12 @@ class ApiService {
     async actualizarEstadoInscripcion(email, data) {
         if (this.useMock) {
             return this.mockRequest(() => {
-                // Validar que el email sea de un admin
                 const adminEmails = ['ana.garcia@edutrack.com', 'adminEdutrack@test.com', 'adminEdutrack2@test.com'];
                 if (!adminEmails.includes(email)) {
                     throw new Error('No tienes permisos de administrador');
                 }
                 
-                const inscripcion = window.mockDB.inscripciones.find(i => i.id == data.inscripcion_id);
+                const inscripcion = window.mockDB.inscripciones.find(i => i.id == data.idInscription);
                 if (!inscripcion) throw new Error('Inscripción no encontrada');
                 
                 if (data.nota !== undefined) inscripcion.nota = data.nota;

@@ -177,7 +177,7 @@ const usuariosModule = {
 
         // Event listeners
         modalContent.querySelectorAll('.close-modal').forEach(btn => {
-            btn.addEventListener('click', () => modal.classList.remove('active');
+            btn.addEventListener('click', () => modal.classList.remove('active'));
         });
 
         // Campos adicionales según rol
@@ -231,10 +231,16 @@ const usuariosModule = {
         }
 
         // Campos adicionales según rol
-        if (data.rol === 'estudiante' && document.getElementById('anoIngreso')) {
-            data.ano_ingreso = document.getElementById('anoIngreso').value;
-        } else if (data.rol === 'profesor' && document.getElementById('especialidad')) {
-            data.especialidad = document.getElementById('especialidad').value;
+        if (data.rol === 'estudiante') {
+        const anoIngresoInput = document.getElementById('anoIngreso')?.value;
+        if (anoIngresoInput) {
+            data.ano_ingreso = parseInt(anoIngresoInput);
+        }
+        } else if (data.rol === 'profesor') {
+            const especialidadInput = document.getElementById('especialidad')?.value;
+            if (especialidadInput) {
+                data.especialidad = especialidadInput;
+            }
         }
 
         try {
