@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Sistema de Gestión Educativa</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduTrack</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" data-page="dashboard" class="nav-link active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" data-page="cursos" class="nav-link">
+                    <i class="fas fa-book"></i> Cursos
+                </a>
+                <a href="#" data-page="usuarios" class="nav-link">
+                    <i class="fas fa-users"></i> Usuarios
+                </a>
+                <a href="#" data-page="inscripciones" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i> Inscripciones
+                </a>
+                <a href="#" data-page="admin" class="nav-link admin-only" style="display: none;">
+                    <i class="fas fa-shield-alt"></i> Administración
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userName">Usuario</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info">
+                            <p class="user-name" id="userNameFull">Nombre Usuario</p>
+                            <p class="user-email" id="userEmail">email@ejemplo.com</p>
+                            <p class="user-role" id="userRole">Rol</p>
+                        </div>
+                        <hr>
+                        <a href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page active">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Bienvenido a EduTrack</h1>
+                    <p>Sistema de gestión educativa para una experiencia académica moderna</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalCursos">0</h3>
+                            <p>Cursos Disponibles</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalEstudiantes">0</h3>
+                            <p>Estudiantes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalProfesores">0</h3>
+                            <p>Profesores</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalInscripciones">0</h3>
+                            <p>Inscripciones Activas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h2>Gestiona tu institución educativa de forma moderna</h2>
+                        <p>EduTrack te permite administrar cursos, estudiantes, profesores e inscripciones en un solo lugar.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" data-navigate="cursos">
+                                <i class="fas fa-book"></i> Explorar Cursos
+                            </button>
+                            <button class="btn btn-outline" data-navigate="inscripciones">
+                                <i class="fas fa-clipboard-list"></i> Ver Inscripciones
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="image-placeholder" style="background: var(--primary-color);">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cursos Page -->
+        <div id="cursosPage" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div>
+                        <h1>Cursos</h1>
+                        <p>Explora y gestiona los cursos disponibles</p>
+                    </div>
+                    <button class="btn btn-primary" id="addCursoBtn">
+                        <i class="fas fa-plus"></i> Nuevo Curso
+                    </button>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="search-bar">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchCursos" placeholder="Buscar cursos...">
+                    </div>
+                </div>
+
+                <!-- Cursos Grid -->
+                <div class="cards-grid" id="cursosGrid">
+                    <!-- Cursos will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuarios Page -->
+        <div id="usuariosPage" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div>
+                        <h1>Usuarios</h1>
+                        <p>Gestiona estudiantes, profesores y administradores</p>
+                    </div>
+                    <button class="btn btn-primary" id="addUsuarioBtn">
+                        <i class="fas fa-user-plus"></i> Nuevo Usuario
+                    </button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="todos">Todos</button>
+                    <button class="tab-btn" data-tab="estudiantes">Estudiantes</button>
+                    <button class="tab-btn" data-tab="profesores">Profesores</button>
+                    <button class="tab-btn" data-tab="administradores">Administradores</button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchUsuarios" placeholder="Buscar usuarios...">
+                    </div>
+                </div>
+
+                <!-- Usuarios Table -->
+                <div class="table-container">
+                    <table class="data-table" id="usuariosTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inscripciones Page -->
+        <div id="inscripcionesPage" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div>
+                        <h1>Inscripciones</h1>
+                        <p>Administra las inscripciones de estudiantes a cursos</p>
+                    </div>
+                    <button class="btn btn-primary" id="addInscripcionBtn">
+                        <i class="fas fa-plus"></i> Nueva Inscripción
+                    </button>
+                </div>
+
+                <!-- Filter by Estado -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-estado="todos">Todas</button>
+                    <button class="filter-btn" data-estado="pendiente">Pendientes</button>
+                    <button class="filter-btn" data-estado="aprobado">Aprobadas</button>
+                    <button class="filter-btn" data-estado="reprobado">Reprobadas</button>
+                </div>
+
+                <!-- Inscripciones Table -->
+                <div class="table-container">
+                    <table class="data-table" id="inscripcionesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Estudiante</th>
+                                <th>Curso</th>
+                                <th>Fecha Inscripción</th>
+                                <th>Estado</th>
+                                <th>Nota</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inscripcionesTableBody">
+                            <!-- Inscripciones will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="adminPage" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div>
+                        <h1>Panel de Administración</h1>
+                        <p>Gestión avanzada del sistema</p>
+                    </div>
+                </div>
+
+                <div class="admin-sections">
+                    <!-- Asignar Curso a Profesor -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <h3>Asignar Curso a Profesor</h3>
+                        </div>
+                        <p>Asigna o reasigna cursos a profesores de la institución</p>
+                        <button class="btn btn-primary" id="asignarCursoBtn">
+                            <i class="fas fa-user-tie"></i> Asignar Curso
+                        </button>
+                    </div>
+
+                    <!-- Calificar Inscripción -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <i class="fas fa-star"></i>
+                            <h3>Calificar Inscripciones</h3>
+                        </div>
+                        <p>Actualiza notas y estados de las inscripciones de estudiantes</p>
+                        <button class="btn btn-primary" id="calificarInscripcionBtn">
+                            <i class="fas fa-edit"></i> Calificar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Container -->
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modalContent">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Login Page reemplazado por selector de usuario -->
+    <div id="userSelectorPage" class="login-page">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>EduTrack</h1>
+                    <p>Selecciona tu usuario para continuar</p>
+                </div>
+                <form id="userSelectorForm">
+                    <div class="form-group">
+                        <label for="selectUsuario">
+                            <i class="fas fa-user"></i> Usuario
+                        </label>
+                        <select id="selectUsuario" required>
+                            <option value="">Cargando usuarios...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Continuar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Mensaje</span>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/cursos.js"></script>
+    <script src="js/usuarios.js"></script>
+    <script src="js/inscripciones.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

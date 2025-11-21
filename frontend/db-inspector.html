@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock DB Inspector - EduTrack</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #F3F4F6;
+            padding: 24px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #6B7280;
+            margin-bottom: 32px;
+        }
+        .actions {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563EB;
+        }
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #1F2937;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .stat {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3B82F6;
+        }
+        .stat-label {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            color: #1F2937;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        pre {
+            background: #1F2937;
+            color: #F9FAFB;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .badge-blue { background: #DBEAFE; color: #1E40AF; }
+        .badge-green { background: #D1FAE5; color: #065F46; }
+        .badge-yellow { background: #FEF3C7; color: #92400E; }
+        .badge-red { background: #FEE2E2; color: #991B1B; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Mock Database Inspector</h1>
+        <p class="subtitle">Visualiza y gestiona la base de datos simulada de EduTrack</p>
+
+        <div class="actions">
+            <button class="btn-primary" onclick="location.href='index.html'">
+                ← Volver a la Aplicación
+            </button>
+            <button class="btn-success" onclick="refreshData()">
+                🔄 Actualizar Datos
+            </button>
+            <button class="btn-danger" onclick="resetDatabase()">
+                ⚠️ Resetear Base de Datos
+            </button>
+        </div>
+
+        <div id="stats" class="section">
+            <h2>📊 Estadísticas Generales</h2>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Total Usuarios</div>
+                    <div class="stat-value" id="totalUsuarios">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Total Cursos</div>
+                    <div class="stat-value" id="totalCursos">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Total Inscripciones</div>
+                    <div class="stat-value" id="totalInscripciones">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Profesores</div>
+                    <div class="stat-value" id="totalProfesores">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Estudiantes</div>
+                    <div class="stat-value" id="totalEstudiantes">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Administradores</div>
+                    <div class="stat-value" id="totalAdmins">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>👥 Usuarios por Rol</h2>
+            <div id="usuariosPorRol"></div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Estado de Inscripciones</h2>
+            <div id="inscripcionesEstado"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Datos Completos (JSON)</h2>
+            <pre id="jsonData"></pre>
+        </div>
+    </div>
+
+    <script src="js/mockDB.js"></script>
+    <script>
+        function refreshData() {
+            // Estadísticas generales
+            document.getElementById('totalUsuarios').textContent = window.mockDB.usuarios.length;
+            document.getElementById('totalCursos').textContent = window.mockDB.cursos.length;
+            document.getElementById('totalInscripciones').textContent = window.mockDB.inscripciones.length;
+            
+            const estudiantes = window.mockDB.usuarios.filter(u => u.rol === 'estudiante').length;
+            const profesores = window.mockDB.usuarios.filter(u => u.rol === 'profesor').length;
+            const admins = window.mockDB.usuarios.filter(u => u.rol === 'administrador').length;
+            
+            document.getElementById('totalEstudiantes').textContent = estudiantes;
+            document.getElementById('totalProfesores').textContent = profesores;
+            document.getElementById('totalAdmins').textContent = admins;
+            
+            // Usuarios por rol
+            const usuariosPorRol = document.getElementById('usuariosPorRol');
+            usuariosPorRol.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <span class="badge badge-red">Administradores (${admins})</span>
+                    <span class="badge badge-blue">Profesores (${profesores})</span>
+                    <span class="badge badge-green">Estudiantes (${estudiantes})</span>
+                </div>
+                <ul style="list-style: none; padding: 0;">
+                    ${window.mockDB.usuarios.map(u => `
+                        <li style="padding: 8px; border-bottom: 1px solid #E5E7EB;">
+                            <strong>${u.nombre_completo}</strong> - ${u.email}
+                            <span class="badge badge-${u.rol === 'administrador' ? 'red' : u.rol === 'profesor' ? 'blue' : 'green'}">${u.rol}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+            
+            // Estado de inscripciones
+            const pendientes = window.mockDB.inscripciones.filter(i => i.estado === 'pendiente').length;
+            const aprobados = window.mockDB.inscripciones.filter(i => i.estado === 'aprobado').length;
+            const reprobados = window.mockDB.inscripciones.filter(i => i.estado === 'reprobado').length;
+            
+            const inscripcionesEstado = document.getElementById('inscripcionesEstado');
+            inscripcionesEstado.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <span class="badge badge-yellow">Pendientes (${pendientes})</span>
+                    <span class="badge badge-green">Aprobados (${aprobados})</span>
+                    <span class="badge badge-red">Reprobados (${reprobados})</span>
+                </div>
+            `;
+            
+            // JSON completo
+            const jsonData = {
+                usuarios: window.mockDB.usuarios,
+                profesores: window.mockDB.profesores,
+                estudiantes: window.mockDB.estudiantes,
+                cursos: window.mockDB.cursos,
+                inscripciones: window.mockDB.inscripciones
+            };
+            
+            document.getElementById('jsonData').textContent = JSON.stringify(jsonData, null, 2);
+        }
+        
+        function resetDatabase() {
+            if (confirm('⚠️ ¿Estás seguro de resetear la base de datos? Se perderán todos los cambios.')) {
+                location.reload();
+            }
+        }
+        
+        // Cargar datos al inicio
+        refreshData();
+    </script>
+</body>
+</html>
