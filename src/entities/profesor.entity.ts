@@ -12,7 +12,7 @@ export class Profesor {
 
     // Relación uno a uno con la entidad Usuario
     @OneToOne(() => Usuario, { eager: true })
-    @JoinColumn({ name: 'id' })
+    @JoinColumn()
     usuario: Usuario;
 
     // Columna para la especialidad del profesor

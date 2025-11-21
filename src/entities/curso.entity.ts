@@ -29,4 +29,5 @@ export class Curso {
     //Relación uno a muchos con la entidad Inscripcion
     @OneToMany(() => Inscripcion, (inscripcion) => inscripcion.curso)
     inscripciones: Inscripcion[];
+    curso: Curso;
 }
