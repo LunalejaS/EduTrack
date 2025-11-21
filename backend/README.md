@@ -1,20 +1,24 @@
 # 💻 EduTrack — Sistema de Gestión Académica
 
-**Autor:** Luna A. Sandoval 🩷
+**Autor:** 
+- 🩷 **Luna A. Sandoval** – Backend, estructura del proyecto
 
 **Fecha:** 21/11/2025 
 
 **Versión:** 1.0
 
+
+**✨ Nota:** Quiero expresar un agradecimiento especial a **Cristian C. Bonilla** por su apoyo en el desarrollo del frontend del proyecto.
+
 ---
 
-## ✨ Descripción
+## 🌷 Descripción
 Backend construido con NestJS, TypeORM y PostgreSQL, diseñado para gestionar usuarios, profesores, estudiantes, cursos e inscripciones.
 Incluye documentación con Swagger, validaciones con class-validator, DTOs estructurados y arquitectura basada en Módulo–Servicio–Controlador.
 
 ---
 
-## ✨ Tecnologías utilizadas
+## 🌷 Tecnologías utilizadas
 - Node.js v11.01.10
 - NestJS
 - TypeScript
@@ -25,7 +29,7 @@ Incluye documentación con Swagger, validaciones con class-validator, DTOs estru
 
 ---
 
-## ✨ Requisitos previos
+## 🌷 Requisitos previos
 Antes de iniciar, asegúrate de tener instalado:
 1. Node.js (v11 o mayor)
 2. NPM
@@ -37,10 +41,10 @@ Antes de iniciar, asegúrate de tener instalado:
 
 ---
 
-## Instalación
+## 🌷 Instalación
 1. Clona el repositorio
    
-   `git clone <url-del-repo>`
+   `git clone https://github.com/LunalejaS/EduTrack.git`
    
    `cd EduTrack`
 3. Instala dependencias
