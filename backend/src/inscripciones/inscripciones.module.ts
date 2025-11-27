@@ -3,11 +3,10 @@
 import { Module } from '@nestjs/common';
 import { InscripcionesService } from './inscripciones.service';
 import { InscripcionesController } from './inscripciones.controller';
-import { Type } from 'class-transformer';
-import { Curso } from 'src/entities/curso.entity';
+import { Curso } from 'src/cursos/entities/curso.entity';
 import { Inscripcion } from 'src/inscripciones/entities/inscripcion.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Estudiante } from 'src/entities/estudiante.entity';
+import { Estudiante } from 'src/users/entities/estudiante.entity';
 
 @Module({
   controllers: [InscripcionesController],

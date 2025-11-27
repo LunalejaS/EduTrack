@@ -2,17 +2,19 @@
 
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateInscripcioneDto } from './create-inscripcione.dto';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { EstadoInscripcion } from 'src/enums/estado-inscripcion.enum';
 
 export class UpdateInscripcioneDto extends PartialType(CreateInscripcioneDto) {
-    @ApiPropertyOptional()
+    // Estado de la inscripción
+    @IsOptional()
+    @IsEnum(EstadoInscripcion)
+    estado?: EstadoInscripcion;
+
+    //Nota del estudiante
     @IsOptional()
     @IsNumber()
-    nota?: number; 
-    
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    estado?: string;
+    @Min(0)
+    @Max(5)
+    nota?: number;
 }
