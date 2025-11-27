@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { CursosService } from './cursos.service';
 import { CursosController } from './cursos.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Curso } from 'src/entities/curso.entity';
+import { Curso } from './entities/curso.entity';
 import { Profesor } from 'src/users/entities/profesor.entity';
-import { Estudiante } from 'src/entities/estudiante.entity';
+import { Estudiante } from 'src/users/entities/estudiante.entity';
 
 @Module({
   controllers: [CursosController],

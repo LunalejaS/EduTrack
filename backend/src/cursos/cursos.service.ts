@@ -1,6 +1,6 @@
 // Cursos Service
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,10 +16,9 @@ export class CursosService {
     private readonly cursoRepository: Repository<Curso>,
 
     @InjectRepository(Profesor)
-    private readonly profesorRepository: Repository<Curso>,
+    private readonly profesorRepository: Repository<Profesor>,
   ) {}
 
-  // CRUD básico
   // Crear un nuevo curso
   async create(createCursoDto: CreateCursoDto) {
     const { nombre, descripcion, fecha_inicio, fecha_fin, profesorId } = createCursoDto;
@@ -42,8 +41,8 @@ export class CursosService {
     const nuevoCurso = this.cursoRepository.create({
       nombre,
       descripcion,
-      fecha_inicio,
-      fecha_fin,
+      fecha_inicio: fechaInicio,
+      fecha_fin: fechaFin,
       profesor,
     });
 
@@ -52,14 +51,14 @@ export class CursosService {
 
   // Obtener todos los cursos
   async findAll() {
-    return await this.cursoRepository.find({ relations: ['profesor', 'inscripciones'] });
+    return await this.cursoRepository.find({ relations: ['profesor', 'profesor.usuario', 'inscripciones'] });
   }
 
   // Obtener un curso por su ID
   async findOne(id: number) {
     const curso = await this.cursoRepository.findOne({
       where: { id },
-      relations: ['profesor', 'inscripciones'],
+      relations: ['profesor', 'inscripciones', 'profesor.usuario'],
     });
     if (!curso) {
       throw new NotFoundException(`El curso con ID ${id} no existe.`);
@@ -69,8 +68,13 @@ export class CursosService {
   }
 
   // Actualizar un curso
-  async update(id: number, updateCursoDto: UpdateCursoDto) {
+  async update(id: number, updateCursoDto: UpdateCursoDto, profesorId?: number) {
     const curso = await this.findOne(id);
+
+    // Si es profesor, verifica que sea su curso
+    if(profesorId && curso.profesor_id !== profesorId){
+      throw new ForbiddenException( " Solo puedes editar tus propios cursos.")
+    }
     
     //Si se actualizan las fechas validar
     if(updateCursoDto.fecha_inicio || updateCursoDto.fecha_fin){
@@ -116,7 +120,12 @@ export class CursosService {
   */
   //Obtener cursos de un profesor específico
   async findCursosByProfesor(profesorId: number){
-    return await this.cursoRepository.find({ where: { profesor: { id: profesorId }}, relations: ['profesor', 'inscripciones']});
+    const profesor = await this.profesorRepository.findOne({ where: { id: profesorId}});
+    if(!profesor){
+      throw new NotFoundException(` Profesor con ${profesorId} no encontrado.`);
+    }
+
+    return await this.cursoRepository.find({ where: { profesor: { id: profesorId }}, relations: ['profesor', 'inscripciones', 'profesor.usuario'], order: { fecha_inicio: 'DESC'}});
   }
 
   //Obtener cursos activos
@@ -129,5 +138,45 @@ export class CursosService {
       .where('curso.fecha_inicio <= :hoy', { hoy })
       .andWhere('curso.fecha_fin >= :hoy', { hoy })
       .getMany();
+  }
+
+  //Asignar o cambiar profesor a un curso
+  async asignarProfesor(cursoId: number, profesorId: number) {
+    const curso = await this.findOne(cursoId);
+    const profesor = await this.profesorRepository.findOne({ where: { id: profesorId }});
+    if (!profesor) {
+      throw new NotFoundException(`Profesor con ID ${profesorId} no encontrado.`);
+    }
+    curso.profesor_id = profesorId;
+
+    await this.cursoRepository.save(curso);
+
+    return {
+      message: 'Profesor asignado al curso con éxito.',
+      curso,
+    };
+  }
+
+  //Obtener estudiantes inscritos en un curso con su estado
+  async getEstudiantesInscritos(cursoId: number, profesorId?: number) {
+    const curso = await this.findOne(cursoId);
+
+    if (profesorId && curso.profesor_id !== profesorId) {
+      throw new ForbiddenException('Solo puedes ver estudiantes de tus propios cursos.');
+    }
+
+    const cursoConInscripciones = await this.cursoRepository
+      .createQueryBuilder('curso')
+      .leftJoinAndSelect('curso.inscripciones', 'inscripciones')
+      .leftJoinAndSelect('inscripciones.estudiante', 'estudiante')
+      .leftJoinAndSelect('estudiante.usuario', 'usuario')
+      .where('curso.id = :cursoId', { cursoId })
+      .getOne();
+
+    if (!cursoConInscripciones) {
+      throw new NotFoundException(`No se encontró información del curso con ID ${cursoId}.`);
+    }
+
+    return cursoConInscripciones;
   }
 }

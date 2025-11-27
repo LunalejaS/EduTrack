@@ -11,6 +11,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolUsuario } from 'src/enums/rol-usuario.enum';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Usuario } from 'src/users/entities/usuario.entity';
+import { SolicitarCursoDto } from './dto/solicitar-curso.dto';
 
 @ApiTags('Cursos')
 @Controller('cursos')
@@ -63,7 +64,7 @@ export class CursosController {
   @Get('mis-cursos')
   @Roles(RolUsuario.PROFESOR)
   async misCursos(@CurrentUser() usuario: Usuario){
-    const cursos = await this.cursosService.findCursosByProfesor(usuario.id);
+    const cursos = await this.cursosService.findCursosByProfesor(usuario.profesor.id);
     return { 
       message: 'Mis cursos como profesor.',
       total: cursos.length,
@@ -84,18 +85,70 @@ export class CursosController {
     }
   }
 
+  // (Para Profesor o Admin) Ver estudiantes inscritos en un curso
+  @Get(':id/estudiantes')
+  @Roles(RolUsuario.PROFESOR, RolUsuario.ADMINISTRADOR)
+  async estudiantesInscritos(@Param('id', ParseIntPipe) id: number, @CurrentUser() usuario: Usuario){
+    const profesorId = usuario.rol === RolUsuario.PROFESOR ? usuario.id : undefined;
+    const curso = await this.cursosService.getEstudiantesInscritos(id, profesorId);
+    
+    //Verificar si hay inscripciones
+    const hayInscritos = curso.inscripciones && curso.inscripciones.length > 0;
+    
+    return {
+      message: hayInscritos ? `Estudiantes inscritos en el curso: ${curso.nombre}` : `No hay estudiantes inscritos en el curso: ${curso.nombre}`,
+      curso: {
+        id: curso.id,
+        nombre: curso.nombre,
+        total_inscritos: curso.inscripciones?.length || 0,
+        estudiantes: hayInscritos 
+          ? curso.inscripciones.map(ins => ({
+              inscripcion_id: ins.id,
+              estudiante: {
+                id: ins.estudiante.id,
+                nombre: ins.estudiante.usuario.nombre_completo,
+                email: ins.estudiante.usuario.email,
+                ano_ingreso: ins.estudiante.ano_ingreso,
+              },
+              estado: ins.estado,
+              nota: ins.nota,
+            }))
+          : [], 
+      },
+    };
+  }
+
+  // Ver cursos de un profesor específico
+  @Get('profesor/:profesorId')
+  async cursosPorProfesor(@Param('profesorId', ParseIntPipe) profesorId: number) {
+    const cursos = await this.cursosService.findCursosByProfesor(profesorId);
+    return {
+      message: `Cursos del profesor ${profesorId}`,
+      total: cursos.length,
+      cursos,
+    };
+  }
+
   // (Para Admins) Actualizar un curso
   @ApiOperation({summary: 'Actualizar un Curso'})
   @ApiResponse({status: 200, description: 'Curso Actualizado'})
   @ApiResponse({status: 404, description: 'Curso no encontrado'})
   @Patch(':id')
   @Roles(RolUsuario.ADMINISTRADOR)
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateCursoDto: UpdateCursoDto) {
-    const curso = await this.cursosService.update(id, updateCursoDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateCursoDto: UpdateCursoDto, @CurrentUser() usuario: Usuario) {
+    const profesorId = usuario.rol === RolUsuario.PROFESOR ? usuario.id: undefined;
+    const curso = await this.cursosService.update(id, updateCursoDto, profesorId);
     return {
       message: ' Curso actualizado con éxito.',
       curso,
     };
+  }
+
+  // (para Admin) Asignar Profesor a un curso
+  @Patch(':id/asignar-profesor')
+  @Roles(RolUsuario.ADMINISTRADOR)
+  async asignarProfesor(@Param('id', ParseIntPipe) id: number, @Body('profesorId') profesorId: number) {
+    return await this.cursosService.asignarProfesor(id, profesorId);
   }
   
   // (Para Admins) Eliminar un curso
@@ -106,5 +159,20 @@ export class CursosController {
   @Roles(RolUsuario.ADMINISTRADOR)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.cursosService.remove(id);
+  }
+
+  // (Para profesor) Solicitar un nuevo curso
+  @Post('solicitar')
+  @Roles(RolUsuario.PROFESOR)
+  async solicitarCurso(@Body() solicitarCursoDto: SolicitarCursoDto, @CurrentUser() usuario: Usuario) {
+    return {
+      message: 'Solicitud de curso enviada. Un administrador la revisará pronto.',
+      solicitud: {
+        profesor_id: usuario.id,
+        profesor_nombre: usuario.nombre_completo,
+        ...solicitarCursoDto,
+        estado: 'pendiente',
+      },
+    };
   }
 }
