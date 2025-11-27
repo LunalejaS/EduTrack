@@ -1,18 +1,18 @@
-//Modulo de usuarios
-import { Module } from '@nestjs/common';
-import { UsuariosController } from './usuarios.controller';
-import { UsuariosService } from './usuarios.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Usuario } from '../entities/usuario.entity';
-import { Profesor } from 'src/entities/profesor.entity';
-import { Estudiante } from 'src/entities/estudiante.entity';
-import { ProfesoresModule } from './profesores/profesores.module';
-import { EstudiantesModule } from './estudiantes/estudiantes.module';
+//Modulo Usuarios
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Usuario } from "src/users/entities/usuario.entity";
+import { Estudiante } from "./entities/estudiante.entity";
+import { Profesor } from "./entities/profesor.entity";
+import { UsuariosService } from "./usuarios.service";
+import { UsuariosController } from "./usuarios.controller";
+import { EstudiantesService } from './estudiantes.service';
+import { ProfesoresService } from './profesores.service';
 
 @Module({
-  //Importamos el controlador y el servicio de usuarios
+  imports: [TypeOrmModule.forFeature([Usuario, Estudiante, Profesor])],
+  providers: [UsuariosService, EstudiantesService, ProfesoresService],
   controllers: [UsuariosController],
-  providers: [UsuariosService],
-  imports: [TypeOrmModule.forFeature([Usuario, Profesor, Estudiante]), ProfesoresModule, EstudiantesModule], //Importamos la entidad Usuario
+  exports: [UsuariosService, EstudiantesService, ProfesoresService],
 })
 export class UsuariosModule {}

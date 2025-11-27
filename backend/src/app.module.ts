@@ -5,6 +5,7 @@ import { AppDataSource } from './ormconfig';
 import { CursosModule } from './cursos/cursos.module';
 import { InscripcionesModule } from './inscripciones/inscripciones.module';
 import { AdministradorModule } from './administracion/administrador.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AdministradorModule } from './administracion/administrador.module';
     CursosModule,
     InscripcionesModule,
     AdministradorModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

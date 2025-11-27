@@ -1,55 +1,153 @@
-//Controlador de usuarios
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
-import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { Usuario } from 'src/entities/usuario.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+//Usuarios COntroler
 
-@ApiTags('Usuarios')
-@UseInterceptors(ClassSerializerInterceptor)
+import { Controller, Get, NotFoundException, Param, UseGuards } from "@nestjs/common";
+import { UsuariosService } from "./usuarios.service";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "src/common/guards/roles.guard";
+import { CurrentUser } from "src/common/decorators/current-user.decorator";
+import { Usuario } from "./entities/usuario.entity";
+import { Roles } from "src/common/decorators/roles.decorator";
+import { RolUsuario } from "src/enums/rol-usuario.enum";
+import { ProfesoresService } from "./profesores.service";
+import { EstudiantesService } from "./estudiantes.service";
+
 @Controller('usuarios')
+@UseGuards(AuthGuard, RolesGuard)
 export class UsuariosController {
-    //Inyectamos el servicio de usuarios
-    constructor(private readonly usuariosService: UsuariosService){}
+    constructor(
+        private readonly usuariosService: UsuariosService,
+        private readonly profesoresService: ProfesoresService,
+        private readonly estudiantesService: EstudiantesService,
+    ){}
 
-    //Acciones CRUD basicas
-    //Crear un nuevo usuario
-    @ApiOperation({summary: 'Crear un nuevo usuario.'})
-    @ApiResponse({status: 201, description: 'Usuario creado correctamente'})
-    @ApiResponse({status: 400, description: 'Datos inválidos'})
-    @Post()
-    async create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<Usuario>{
-        return this.usuariosService.create(createUsuarioDto);
+    // Ontener perfil actual
+    @Get('perfil')
+    async findOne(@CurrentUser() usuario: Usuario){
+        return { 
+            message: 'Perfil del usuario', 
+            usuario};
     }
-    //Obtener todos los usuarios
-    @ApiOperation({summary: 'Obtener todos los usuarios'})
-    @ApiResponse({status: 200, description: 'Lista de Usuarios obtenida'})
+
+    // (Para Administradores) Obtener todos los Usuarios
     @Get()
-    findAll(){
-        return this.usuariosService.findAll();
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async findAll() {
+        const usuarios = await  this.usuariosService.findAll();
+        if(!usuarios || usuarios.length === 0){
+            throw new NotFoundException(" No hay usuarios registrados aún.");
+        }
+
+        return {
+            message: 'Lista de todos los usuarios',
+            total: usuarios.length,
+            usuarios,
+        };
     }
-    //Obtener un usuario por id
-    @ApiOperation({summary: 'Obtener un usuario por su ID'})
-    @ApiResponse({status: 200, description: 'Usuario encontrado'})
-    @ApiResponse({status: 404, description: 'Usuario no encontrado'})
+
+    // (Para Administradores) Obtener usuarios por rol
+    @Get('rol/:rol')
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async findRol(@Param('rol') rol: string){
+        const usuarios = await this.usuariosService.findByRol(rol);
+        return{
+            message: `Usuarios con rol: ${ rol }`,
+            total: usuarios.length,
+            usuarios,
+        };
+    }
+
+    // (Para Administradores) Obtener un usuario específico por ID
     @Get(':id')
-    findOne(@Param('id') id: string){
-        return this.usuariosService.findOne(1);
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async findById(@Param('id') id: string){
+        const usuario = await this.usuariosService.findByID(+id);
+        if(!usuario){
+            throw new NotFoundException(` No existe el usuario con id ${id}.`);
+        }
+        return {
+            message: ' Usuario Encontrado.',
+            usuario,
+        };
     }
-    //Actualizar un usuario
-    @ApiOperation({summary: 'Actualizar un usuario'})
-    @ApiResponse({status: 200, description: 'Usuario Actualizado'})
-    @ApiResponse({status: 404, description: 'Usuario no encontrado'})
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() data: CreateUsuarioDto){
-        return this.usuariosService.update(+id, data);
+
+    // Deshboard personalizado según rol
+    @Get('dashboard/info')
+    async dashboard(@CurrentUser() usuario: Usuario){
+        let mensaje = ' ';
+        let infoAdicional: any = null;
+
+        switch (usuario.rol){
+            case RolUsuario.ADMINISTRADOR:
+                mensaje = 'Panel de Administrador'
+                const totalUsuarios = await this.usuariosService.findAll();
+                const totalAdministradores = await this.usuariosService.findByRol(RolUsuario.ADMINISTRADOR);
+                const totalEstudiantes = await this.usuariosService.findByRol(RolUsuario.ESTUDIANTE);
+                const totalProfesores = await this.usuariosService.findByRol(RolUsuario.PROFESOR);
+
+                infoAdicional = {
+                    estadisticas: {
+                        total_usuarios: totalUsuarios.length,
+                        total_administradores: totalAdministradores.length,
+                        total_estudiantes: totalEstudiantes.length,
+                        total_profesor: totalProfesores.length,
+                    }
+                };
+                break;
+            
+            case RolUsuario.PROFESOR:
+                mensaje = 'Panel de Profesor'
+                const profesor = await this.profesoresService.findById(usuario.id);
+                infoAdicional = {
+                    especialidad: profesor?.especialidad,
+                    total_cursos: profesor?.cursos?.length || 0,
+                    cursos: profesor?.cursos || [],
+                };
+                break;
+            
+            case RolUsuario.ESTUDIANTE:
+                mensaje = 'Panel de Estuudiante'
+                const estudiante = await this.estudiantesService.findByID(usuario.id);
+                infoAdicional = {
+                    ano_ingreso: estudiante?.ano_ingreso,
+                    total_inscripciones: estudiante?.inscripciones?.length || 0,
+                    inscripciones: estudiante?.inscripciones || [], 
+                };
+                break;
+        }
+
+        return {
+            mensaje,
+            usuario: {
+                id: usuario.id,
+                nombre: usuario.nombre_completo,
+                email: usuario.email,
+                rol: usuario.rol,
+            },
+            ...infoAdicional,
+        };
     }
-    //Eliminar un usuario
-    @ApiOperation({summary: 'Eliminar un usuario'})
-    @ApiResponse({status: 200, description: 'Usuario eliminado con éxito'})
-    @ApiResponse({status: 404, description: 'Usuario no encontrado'})
-    @Delete(':id')
-    remove(@Param('id') id: string){
-        return this.usuariosService.remove(+id);
+
+    // (Para estudiantes y profesores) Obtener lista de todos los estudiantes
+    @Get('estudiantes/todos')
+    @Roles(RolUsuario.PROFESOR, RolUsuario.ESTUDIANTE)
+    async listarEstudiantes() {
+        const estudiantes = await this.usuariosService.findByRol(RolUsuario.ESTUDIANTE);
+        return {
+            message: 'Lista de estudiantes',
+            total: estudiantes.length,
+            estudiantes,
+        };
+    }
+
+    // (Para administradores) Obtener lista de Profesores
+    @Get('profesores/todos')
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async listarProfesores(){
+        const profesores = await this.usuariosService.findByRol(RolUsuario.PROFESOR);
+        return {
+            message: 'Lista de profesores',
+            total: profesores.length,
+            profesores,
+        };
     }
 }

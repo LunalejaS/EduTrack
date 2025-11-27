@@ -1,22 +1,22 @@
-//Definición de la entidad Estudiante
+// Estudiante Entity
 
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { Usuario } from "./usuario.entity";
-import { Inscripcion } from "./inscripcion.entity";
+import { Inscripcion } from "src/inscripciones/entities/inscripcion.entity";
 
 @Entity('estudiante')
 export class Estudiante {
-    // Columna de clave primaria que referencia al usuario (id del Usuario)
+    // Clave que referencia al usuario
     @PrimaryColumn()
     id: number;
 
     // Relación uno a uno con la entidad Usuario
-    @OneToOne(() => Usuario, { eager: true })
+    @OneToOne(() => Usuario, (usuario) => usuario.estudiante, { eager: true })
     @JoinColumn({ name: 'id'})
     usuario: Usuario;
 
-    // Columna para el grado del estudiante
-    @Column()
+    // Año de ingreso del Estudiante
+    @Column({ type: 'date'})
     ano_ingreso: string;
 
     //Relación uno a muchos con la entidad Inscripcion

@@ -1,69 +1,45 @@
-//Servicio de usuarios
+// Usuario Service
 
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository }  from '@nestjs/typeorm';
-import { RolUsuario, Usuario } from '../entities/usuario.entity';
-import { Repository } from 'typeorm';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import * as bcrypt from 'bcrypt';
-import { Profesor } from 'src/entities/profesor.entity';
-import { Estudiante } from 'src/entities/estudiante.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Usuario } from "src/users/entities/usuario.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UsuariosService {
     constructor(
-        //Inyectamos el repositorio de la entidad Usuario
         @InjectRepository(Usuario)
-        private readonly usuarioRepository: Repository<Usuario>,
-        //Inyectamos el repositorio de la entidad Profesor
-        @InjectRepository(Profesor)
-        private readonly profesorRepository: Repository<Profesor>,
-        //Inyectamos el repositorio de la entidad Estudiante
-        @InjectRepository(Estudiante)
-        private readonly estudianteRepository: Repository<Estudiante>,
+        private readonly usuarioRepositorio: Repository<Usuario>,
     ){}
 
-    //CRUD basico
-    //crear un usuario
-    async create(createUsuarioDto: CreateUsuarioDto) {
-        const { contrasena, rol, ...rest } = createUsuarioDto;
-        // Validar campos obligatorios
-        if (!contrasena) throw new BadRequestException('La contraseña es obligatoria');
+    // Crear Usuario
+    async create(data: Partial<Usuario>){
+        const usuario = this.usuarioRepositorio.create(data);
+        return this.usuarioRepositorio.save(usuario);
+    }
 
-        // Verificar email único
-        const exist = await this.usuarioRepository.findOne({ where: { email: rest.email } });
-        if (exist) throw new BadRequestException('El email ya está en uso');
+    //Obtener usuario por Email
+    async findByEmail(email: string): Promise<Usuario | null>{
+        return await this.usuarioRepositorio.findOne({ where: { email }, select: ['id', 'nombre_completo', 'email', 'contrasena', 'rol']});
+    }
 
-        // Hash contraseña
-        const hashedPassword = await bcrypt.hash(contrasena, 10);
-
-        // Crear usuario
-        const nuevoUsuario = this.usuarioRepository.create({
-            ...rest,
-            contrasena: hashedPassword,
-            rol,
-        });
-        return await this.usuarioRepository.save(nuevoUsuario);
+    //Obtener usuario por ID
+    async findByID(id: number): Promise<Usuario | null>{
+        const usuario = await this.usuarioRepositorio.findOne({ where: {id}});
+        if(!usuario){
+            throw new NotFoundException(` Usuario con ID ${id} no encontrado.`);
         }
 
-
-    //obtener todos los usuarios
-    findAll(){
-        return this.usuarioRepository.find();
-    }
-    //obtener un usuario por id
-    findOne(id: number){
-        return this.usuarioRepository.findOneBy({id});
-    }
-    //actualizar un usuario
-    update(id: number, data: UpdateUsuarioDto){
-        return this.usuarioRepository.update(id, data);
-    }
-    //eliminar un usuario
-    async remove(id: number){
-        await this.usuarioRepository.delete(id);
-        return { message: `Usuario con id ${id} eliminado correctamente` };
+        return usuario;
     }
 
+    //Obtener todos los usuarios
+    async findAll(): Promise<Usuario[]>{
+        return this.usuarioRepositorio.find();
+    }
+
+    //Obtener usuarios por rol
+    async findByRol(rol: string): Promise<Usuario[]>{
+        return await this.usuarioRepositorio.find({ where: { rol: rol as any}});
+    }
 }

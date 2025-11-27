@@ -6,7 +6,7 @@ import { UpdateInscripcioneDto } from './dto/update-inscripcione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estudiante } from 'src/entities/estudiante.entity';
 import { In, Repository } from 'typeorm';
-import { Inscripcion } from 'src/entities/inscripcion.entity';
+import { Inscripcion } from 'src/inscripciones/entities/inscripcion.entity';
 import { Curso } from 'src/entities/curso.entity';
 
 @Injectable()

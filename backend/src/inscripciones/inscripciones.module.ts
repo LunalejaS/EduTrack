@@ -5,7 +5,7 @@ import { InscripcionesService } from './inscripciones.service';
 import { InscripcionesController } from './inscripciones.controller';
 import { Type } from 'class-transformer';
 import { Curso } from 'src/entities/curso.entity';
-import { Inscripcion } from 'src/entities/inscripcion.entity';
+import { Inscripcion } from 'src/inscripciones/entities/inscripcion.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Estudiante } from 'src/entities/estudiante.entity';
 

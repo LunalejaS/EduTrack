@@ -1,13 +1,12 @@
-//Servicio para gestionar las operaciones relacionadas con los cursos
+// Cursos Service
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Curso } from 'src/entities/curso.entity';
-import { In, Repository } from 'typeorm';
-import { Profesor } from 'src/entities/profesor.entity';
-import { NotFoundError } from 'rxjs';
+import { Curso } from 'src/cursos/entities/curso.entity';
+import { Repository } from 'typeorm';
+import { Profesor } from 'src/users/entities/profesor.entity';
 
 @Injectable()
 export class CursosService {
@@ -23,19 +22,31 @@ export class CursosService {
   // CRUD básico
   // Crear un nuevo curso
   async create(createCursoDto: CreateCursoDto) {
-    const { nombre, descripcion, duracion_horas, profesorId } = createCursoDto;
-
+    const { nombre, descripcion, fecha_inicio, fecha_fin, profesorId } = createCursoDto;
+    
+    // Verificar que el profesor existe
     const profesor = await this.profesorRepository.findOne({ where: { id: profesorId } });7
     if (!profesor) {
       throw new NotFoundException(`El profesor con ID ${profesorId} no existe.`);
     }
 
+    // Validar que fecha_fin sea posterior a fecha_inicio
+    const fechaInicio = new Date(fecha_inicio);
+    const fechaFin = new Date(fecha_fin);
+
+    if (fechaFin <= fechaInicio){
+      throw new BadRequestException(" La fecha de fin debe ser posterior a la fecha de inicio.")
+    }
+
+    // Crear el nuevo curso
     const nuevoCurso = this.cursoRepository.create({
       nombre,
       descripcion,
-      duracion_horas,
+      fecha_inicio,
+      fecha_fin,
       profesor,
     });
+
     return await this.cursoRepository.save(nuevoCurso);
   }
 
@@ -60,6 +71,35 @@ export class CursosService {
   // Actualizar un curso
   async update(id: number, updateCursoDto: UpdateCursoDto) {
     const curso = await this.findOne(id);
+    
+    //Si se actualizan las fechas validar
+    if(updateCursoDto.fecha_inicio || updateCursoDto.fecha_fin){
+      const fechaInicio = updateCursoDto.fecha_inicio ? new Date(updateCursoDto.fecha_inicio) : curso.fecha_inicio;
+      const fechaFin = updateCursoDto.fecha_fin ? new Date(updateCursoDto.fecha_fin) : curso.fecha_fin;
+
+      if(fechaFin <= fechaInicio){
+        throw new BadRequestException(" La fecha de fin debe ser posteriror a la fecha de inicio.")
+      }
+
+      //Asignar las fechas convertidas
+      if(updateCursoDto.fecha_inicio){
+        updateCursoDto.fecha_inicio = fechaInicio;
+      }
+      if (updateCursoDto.fecha_fin){
+        updateCursoDto.fecha_fin = fechaFin;
+      }
+    }
+
+    // Si se actualiza el profesor, verifica que existe
+    if (updateCursoDto.profesorId){
+      const profesor = await this.profesorRepository.findOne({ where: { id: updateCursoDto.profesorId}});
+
+      if (!profesor){
+        throw new NotFoundException(` El profesor con ID ${updateCursoDto.profesorId} no existe.`)
+      }
+    }
+
+    //Actualizar el curso
     Object.assign(curso, updateCursoDto);
     return await this.cursoRepository.save(curso);
   }
@@ -69,5 +109,25 @@ export class CursosService {
     const curso = await this.findOne(id);
     await this.cursoRepository.remove(curso);
     return { message: `El curso con ID ${id} ha sido eliminado.` };
+  }
+
+  /*
+  Métodos adicionales
+  */
+  //Obtener cursos de un profesor específico
+  async findCursosByProfesor(profesorId: number){
+    return await this.cursoRepository.find({ where: { profesor: { id: profesorId }}, relations: ['profesor', 'inscripciones']});
+  }
+
+  //Obtener cursos activos
+  async findCursosActivos() {
+    const hoy = new Date();
+    return await this.cursoRepository
+      .createQueryBuilder('curso')
+      .leftJoinAndSelect('curso.profesor', 'profesor')
+      .leftJoinAndSelect('curso.inscripciones', 'inscripciones')
+      .where('curso.fecha_inicio <= :hoy', { hoy })
+      .andWhere('curso.fecha_fin >= :hoy', { hoy })
+      .getMany();
   }
 }

@@ -2,10 +2,10 @@
 
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Curso } from "src/entities/curso.entity";
-import { Inscripcion } from "src/entities/inscripcion.entity";
-import { Profesor } from "src/entities/profesor.entity";
-import { Usuario } from "src/entities/usuario.entity";
+import { Curso } from "src/cursos/entities/curso.entity";
+import { Inscripcion } from "src/inscripciones/entities/inscripcion.entity";
+import { Profesor } from "src/users/entities/profesor.entity";
+import { Usuario } from "src/users/entities/usuario.entity";
 import { Repository } from "typeorm";
 import { esEmailAceptadoAdmin } from "./config/admin-emails.config";
 import { AsignarCursoDto } from "./dto/asignar-curso.dto";

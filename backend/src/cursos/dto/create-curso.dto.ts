@@ -1,6 +1,7 @@
 //DTO para la creación de un nuevo curso
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsString, Min } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsInt, IsNotEmpty, IsString, Min } from "class-validator";
 
 export class CreateCursoDto {
     // Nombre del curso
@@ -15,11 +16,17 @@ export class CreateCursoDto {
     @IsNotEmpty()
     descripcion: string;
 
-    // Duración del curso en horas
-    @ApiProperty()
-    @IsInt()
-    @Min(1)
-    duracion_horas: number;
+    // Fecha de inicio del curso
+    @IsNotEmpty()
+    @IsDate()
+    @Type(() => Date)
+    fecha_inicio: Date;
+
+    // Fecha de fin del curso
+    @IsNotEmpty()
+    @IsDate()
+    @Type(() => Date)
+    fecha_fin: Date;
 
     // ID del profesor que imparte el curso
     @ApiProperty()
