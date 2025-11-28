@@ -1,9 +1,16 @@
 # 💻✨ EduTrack - Sistema de Gestión Educativa
 
 **Autor:** Luna A. Sandoval 🩷
+
 **Versión:** 1.0
 
+**Colaboración:** Cristian Bonilla (Fronted)
+
 Sistema completo de gestión educativa con autenticación basada en roles, gestión de cursos e inscripciones para estudiantes, profesores y administradores.
+
+
+❗Importante: No todas las funcionalidades estan enlazadas al front.
+
 
 ---
 ## 🌷 Características
@@ -276,3 +283,34 @@ edutrack-backend/
 | Asignar profesores a cursos | ❌ | ❌ | ✅ |
 
 *El profesor solo puede editar sus propios cursos
+
+## 🌷 Capturas de Funcionamiento del Sistema
+### Página de Inicio
+<img width="1897" height="1019" alt="image" src="https://github.com/user-attachments/assets/2701d714-bb4e-4fe8-8709-e5db0b6c8f6b" />
+
+### Registrarse
+<img width="1893" height="1022" alt="image" src="https://github.com/user-attachments/assets/26c1d490-4762-4e3f-a90d-83f17ec23f7f" />
+
+### Inicio de Sesión
+<img width="1892" height="1012" alt="image" src="https://github.com/user-attachments/assets/9a4641b0-6a45-41d9-9614-e0b32679b500" />
+
+### Vista de Cursos Disponibles
+<img width="1898" height="1032" alt="image" src="https://github.com/user-attachments/assets/4759e3cc-20e4-424c-ab81-26239f650a13" />
+
+### Vista de Dashboard (Admin)
+<img width="1905" height="1019" alt="image" src="https://github.com/user-attachments/assets/88f0b8d4-7e69-45f2-9717-51c980742d07" />
+
+### Vista de Perfil de Usaurio
+<img width="1893" height="1020" alt="image" src="https://github.com/user-attachments/assets/09a0830d-777a-4148-bdfe-e2fb3dd0c918" />
+
+### Vista de Dashboard (Estudiante)
+<img width="1894" height="1004" alt="image" src="https://github.com/user-attachments/assets/acb1208b-885a-4c74-982a-02566377f10f" />
+
+### ⚙️Funcionalidades que no estan en el Front:
+## Cambiar de estado una inscripción
+<img width="1865" height="1129" alt="image" src="https://github.com/user-attachments/assets/05c1a1de-52cd-403a-bd63-23ba777fee7e" />
+## Crear Curso
+<img width="1918" height="1194" alt="image" src="https://github.com/user-attachments/assets/813863f6-f0d2-47ff-bdfe-78434fe318ac" />
+
+
+
