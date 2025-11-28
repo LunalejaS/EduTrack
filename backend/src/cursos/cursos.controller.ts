@@ -15,7 +15,7 @@ import { SolicitarCursoDto } from './dto/solicitar-curso.dto';
 
 @ApiTags('Cursos')
 @Controller('cursos')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class CursosController {
   constructor(
     private readonly cursosService: CursosService,

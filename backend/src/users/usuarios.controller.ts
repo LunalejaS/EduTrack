@@ -12,7 +12,7 @@ import { ProfesoresService } from "./profesores.service";
 import { EstudiantesService } from "./estudiantes.service";
 
 @Controller('usuarios')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsuariosController {
     constructor(
         private readonly usuariosService: UsuariosService,

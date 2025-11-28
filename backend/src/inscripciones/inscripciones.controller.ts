@@ -14,7 +14,7 @@ import { Usuario } from 'src/users/entities/usuario.entity';
 
 @ApiTags('inscripciones')
 @Controller('inscripciones')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class InscripcionesController {
   constructor(
     private readonly inscripcionesService: InscripcionesService
