@@ -21,7 +21,7 @@ export class AdministradorController {
     }
 
     //Actualizar nota o estado de inscripción
-    @Patch('inscripciones/estado')
+    @Patch('inscripciones/:id/estado')
     actualizarEstadoInscripcion(
         @Query('email') email: string,
         @Body() asignarCursoDto: ActualizarEstadoInscropcionDto,

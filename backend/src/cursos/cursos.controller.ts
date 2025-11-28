@@ -120,7 +120,7 @@ export class CursosController {
   }
 
   // (Para Admins) Actualizar un curso
-  @Patch(':id')
+  @Patch('actualizar/:id')
   @Roles(RolUsuario.ADMINISTRADOR)
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateCursoDto: UpdateCursoDto, @CurrentUser() usuario: Usuario) {
     const profesorId = usuario.rol === RolUsuario.PROFESOR ? usuario.id: undefined;
