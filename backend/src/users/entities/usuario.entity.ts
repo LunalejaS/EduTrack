@@ -21,7 +21,7 @@ export class Usuario {
     email: string;
 
     //Contraseña (hasheada)
-    @Column({ type: 'varchar', length: 20, select: false})
+    @Column({ type: 'varchar', length: 100, select: false})
     @Exclude()
     contrasena: string;
 

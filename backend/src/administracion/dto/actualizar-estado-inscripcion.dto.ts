@@ -1,7 +1,7 @@
 //DTO para actualizar el estado de la inscripcion
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsNumber, IsOptional, IsPositive } from "class-validator";
-import { EstadoInscripcion } from "src/enums/estado-inscripcion.enum"
+import { EstadoInscripcion } from "src/enums/estado-inscripcion.enum";
 
 
 export class ActualizarEstadoInscropcionDto{

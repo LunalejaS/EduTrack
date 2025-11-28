@@ -36,11 +36,8 @@ export class AuthService {
         const usuario = await this.usuariosService.create({ ...registerDto, contrasena: hash, rol: rolAsignado})
         
         //Crear registro específico según el rol
-        if(rolAsignado === RolUsuario.ESTUDIANTE){
-            await this.estudiantesService.create({
-                id: usuario.id,
-                ano_ingreso: registerDto.ano_ingreso || new Date().getFullYear().toString(),
-            })
+        if (rolAsignado === RolUsuario.ESTUDIANTE) {
+            await this.estudiantesService.create({ id: usuario.id, ano_ingreso: registerDto.ano_ingreso ? Number(registerDto.ano_ingreso) : new Date().getFullYear() });
         }
 
         return {

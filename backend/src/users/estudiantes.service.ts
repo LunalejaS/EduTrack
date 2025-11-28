@@ -14,7 +14,7 @@ export class EstudiantesService {
     ){}
 
     //Crear estudiante
-    async create(data: { id: number; ano_ingreso: string}){
+    async create(data: { id: number; ano_ingreso: number}){
         const estudiante = this.estudiantesRepository.create(data);
         return await this.estudiantesRepository.save(estudiante);
     }

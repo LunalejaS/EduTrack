@@ -16,8 +16,8 @@ export class Estudiante {
     usuario: Usuario;
 
     // Año de ingreso del Estudiante
-    @Column({ type: 'date'})
-    ano_ingreso: string;
+    @Column({ type: 'int'})
+    ano_ingreso: number;
 
     //Relación uno a muchos con la entidad Inscripcion
     @OneToMany(() => Inscripcion, (inscripcion) => inscripcion.estudiante)
