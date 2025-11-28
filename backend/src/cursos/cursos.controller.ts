@@ -4,7 +4,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGua
 import { CursosService } from './cursos.service';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -13,7 +12,6 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Usuario } from 'src/users/entities/usuario.entity';
 import { SolicitarCursoDto } from './dto/solicitar-curso.dto';
 
-@ApiTags('Cursos')
 @Controller('cursos')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class CursosController {
@@ -23,9 +21,6 @@ export class CursosController {
 
   //CRUD básico
   // (Para Admins) Crear un nuevo curso
-  @ApiOperation({summary: 'Crear un nuevo curso.'})
-  @ApiResponse({status: 201, description: 'Curso creado correctamente'})
-  @ApiResponse({status: 400, description: 'Datos inválidos'})
   @Post()
   @Roles(RolUsuario.ADMINISTRADOR)
   async create(@Body() createCursoDto: CreateCursoDto) {
@@ -37,8 +32,6 @@ export class CursosController {
   }
 
   // Obtener todos los cursos
-  @ApiOperation({summary: 'Obtener todos los Cursos'})
-  @ApiResponse({status: 200, description: 'Lista de Cursos obtenida'})
   @Get()
   async findAll() {
     const cursos = await this.cursosService.findAll();
@@ -73,9 +66,6 @@ export class CursosController {
   }
 
   // Obtener un curso por su ID
-  @ApiOperation({summary: 'Obtener un Curso por su ID'})
-  @ApiResponse({status: 200, description: 'Curso encontrado'})
-  @ApiResponse({status: 404, description: 'Curso no encontrado'})
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const curso = await this.cursosService.findOne(id);
@@ -130,9 +120,6 @@ export class CursosController {
   }
 
   // (Para Admins) Actualizar un curso
-  @ApiOperation({summary: 'Actualizar un Curso'})
-  @ApiResponse({status: 200, description: 'Curso Actualizado'})
-  @ApiResponse({status: 404, description: 'Curso no encontrado'})
   @Patch(':id')
   @Roles(RolUsuario.ADMINISTRADOR)
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateCursoDto: UpdateCursoDto, @CurrentUser() usuario: Usuario) {
@@ -152,9 +139,6 @@ export class CursosController {
   }
   
   // (Para Admins) Eliminar un curso
-  @ApiOperation({summary: 'Eliminar un Curso'})
-  @ApiResponse({status: 200, description: 'Curso eliminado con éxito'})
-  @ApiResponse({status: 404, description: 'Curso no encontrado'})
   @Delete(':id')
   @Roles(RolUsuario.ADMINISTRADOR)
   async remove(@Param('id', ParseIntPipe) id: number) {

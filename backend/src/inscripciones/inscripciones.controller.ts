@@ -4,7 +4,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGua
 import { InscripcionesService } from './inscripciones.service';
 import { CreateInscripcioneDto } from './dto/create-inscripcione.dto';
 import { UpdateInscripcioneDto } from './dto/update-inscripcione.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -12,7 +11,6 @@ import { RolUsuario } from 'src/enums/rol-usuario.enum';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Usuario } from 'src/users/entities/usuario.entity';
 
-@ApiTags('inscripciones')
 @Controller('inscripciones')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class InscripcionesController {
