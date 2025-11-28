@@ -307,10 +307,14 @@ edutrack-backend/
 <img width="1894" height="1004" alt="image" src="https://github.com/user-attachments/assets/acb1208b-885a-4c74-982a-02566377f10f" />
 
 ### ⚙️Funcionalidades que no estan en el Front:
-## Cambiar de estado una inscripción
+### Cambiar de estado una inscripción
 <img width="1865" height="1129" alt="image" src="https://github.com/user-attachments/assets/05c1a1de-52cd-403a-bd63-23ba777fee7e" />
-## Crear Curso
+
+### Crear Curso
 <img width="1918" height="1194" alt="image" src="https://github.com/user-attachments/assets/813863f6-f0d2-47ff-bdfe-78434fe318ac" />
 
+### Modificar curso
+<img width="1857" height="1112" alt="image" src="https://github.com/user-attachments/assets/7301dac5-0c4c-44b0-bc84-df258954ba12" />
 
-
+### Obtener cursos de un profesor especifico
+<img width="1917" height="1132" alt="image" src="https://github.com/user-attachments/assets/a2cf4110-d0e1-4d3d-87e4-7395cd29850f" />
