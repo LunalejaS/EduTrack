@@ -8,12 +8,14 @@ import { RegisterDto } from './dto/registrer.dto';
 import { ConfigService } from '@nestjs/config';
 import { RolUsuario } from 'src/enums/rol-usuario.enum';
 import { EstudiantesService } from 'src/users/estudiantes.service';
+import { ProfesoresService } from 'src/users/profesores.service';
 
 @Injectable()
 export class AuthService {
     //Inyección de Dependencias
     constructor(
         private readonly usuariosService: UsuariosService,
+        private readonly profesoresService: ProfesoresService,
         private readonly estudiantesService: EstudiantesService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
@@ -21,31 +23,43 @@ export class AuthService {
 
     //Registrarse
     async register(registerDto: RegisterDto){
-        //Verificación de Existencia
-        const usuarioExistente = await this.usuariosService.findByEmail(registerDto.email);
-        if(usuarioExistente){
-            throw new BadRequestException(" El email ya está registrado.");
+          const existe = await this.usuariosService.findByEmail(registerDto.email);
+        if (existe) {
+            throw new BadRequestException('El email ya está registrado.');
         }
 
-        //Logica de roles
         const rolAsignado = this.determinarRolInicial(registerDto.email);
 
         const hash = await bcrypt.hash(registerDto.contrasena, 10);
-       
-        //Creación de usuario
-        const usuario = await this.usuariosService.create({ ...registerDto, contrasena: hash, rol: rolAsignado})
-        
-        //Crear registro específico según el rol
+
+        // Crear usuario base
+        const usuario = await this.usuariosService.create({
+            ...registerDto,
+            contrasena: hash,
+            rol: rolAsignado,
+        });
+
+        // Crear registro asociado según el rol
         if (rolAsignado === RolUsuario.ESTUDIANTE) {
-            await this.estudiantesService.create({ id: usuario.id, ano_ingreso: registerDto.ano_ingreso ? Number(registerDto.ano_ingreso) : new Date().getFullYear() });
+            await this.estudiantesService.create({
+                usuario,
+                ano_ingreso: registerDto.ano_ingreso ? Number(registerDto.ano_ingreso) : new Date().getFullYear(),
+            });
+        }
+
+        if (rolAsignado === RolUsuario.PROFESOR) {
+            await this.profesoresService.create({
+                usuario,
+                especialidad: registerDto.especialidad ?? null,
+            });
         }
 
         return {
-            message: " Usuario Creado con éxito.",
+            message: 'Usuario creado con éxito.',
             usuario,
         };
     }
-
+        
     private determinarRolInicial(email: string): RolUsuario {
         //Obtener correos de admins desde el .env
         const adminEmails = this.configService.get<string>('ADMIN_EMAILS')?.split(',').map(e => e.trim()) || [];

@@ -1,6 +1,6 @@
 //Usuarios COntroler
 
-import { Controller, Get, NotFoundException, Param, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, UseGuards } from "@nestjs/common";
 import { UsuariosService } from "./usuarios.service";
 import { AuthGuard } from "@nestjs/passport";
 import { RolesGuard } from "src/common/guards/roles.guard";
@@ -57,7 +57,7 @@ export class UsuariosController {
     }
 
     // (Para Administradores) Obtener un usuario específico por ID
-    @Get(':id')
+    @Get('find/:id')
     @Roles(RolUsuario.ADMINISTRADOR)
     async findById(@Param('id') id: string){
         const usuario = await this.usuariosService.findByID(+id);
@@ -98,7 +98,6 @@ export class UsuariosController {
                 mensaje = 'Panel de Profesor'
                 const profesor = await this.profesoresService.findById(usuario.id);
                 infoAdicional = {
-                    especialidad: profesor?.especialidad,
                     total_cursos: profesor?.cursos?.length || 0,
                     cursos: profesor?.cursos || [],
                 };
@@ -149,5 +148,42 @@ export class UsuariosController {
             total: profesores.length,
             profesores,
         };
+    }
+
+    // (Para administradores) Eliminar Profesor
+    @Delete('remove/profesor/:id')
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async removeProfesor(@Param('id', ParseIntPipe) id: number) {
+        return this.profesoresService.removeByUserId(id);
+    }
+
+    // (Para administradores o profesores) Eliminar estudiante
+    @Delete('remove/estudiante/:id')
+    @Roles(RolUsuario.ADMINISTRADOR, RolUsuario.PROFESOR)
+    async removeEstudiante(@Param('id', ParseIntPipe) id: number) {
+        return this.estudiantesService.removeByUserId(id);
+    }
+
+    // (Para administradores) Eliminar cualquier usuario
+    @Delete('remove/:id')
+    @Roles(RolUsuario.ADMINISTRADOR)
+    async removeUser(@Param('id', ParseIntPipe) id: number) {
+        const usuario = await this.usuariosService.findByID(id);
+
+        if (!usuario) {
+            throw new NotFoundException(`No existe el usuario con id ${id}.`);
+        }
+
+        switch (usuario.rol) {
+            case RolUsuario.PROFESOR:
+                return this.profesoresService.removeByUserId(id);
+
+            case RolUsuario.ESTUDIANTE:
+                return this.estudiantesService.removeByUserId(id);
+
+            case RolUsuario.ADMINISTRADOR:
+                // Opcional: podrías bloquear borrar admin
+                return this.usuariosService.remove(id);
+        }
     }
 }

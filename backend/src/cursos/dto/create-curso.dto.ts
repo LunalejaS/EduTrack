@@ -1,6 +1,6 @@
 //DTO para la creación de un nuevo curso
 import { Type } from "class-transformer";
-import { IsDate, IsInt, IsNotEmpty, IsString, Min } from "class-validator";
+import { IsDate, IsInt, IsNotEmpty, IsString, Max, Min } from "class-validator";
 
 export class CreateCursoDto {
     // Nombre del curso
@@ -29,4 +29,9 @@ export class CreateCursoDto {
     @IsInt()
     @Min(1)
     profesorId: number;
+
+    //Cupo maximo
+    @IsInt()
+    @Max(25)
+    cupo_maximo: number;
 }

@@ -1,6 +1,6 @@
 // Registro DTO
 
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 import { MateriasProfesor } from "src/enums/materia-profesor.enum";
 
 export class RegisterDto {
@@ -24,7 +24,9 @@ export class RegisterDto {
     @IsString()
     ano_ingreso?: string;
 
-    //Especialidad (Solo para profesores)
+    //Especialidad (Solo para Profesores)
     @IsOptional()
-    especialidad?: MateriasProfesor;
+    @IsEnum(MateriasProfesor)
+    especialidad: MateriasProfesor;
+
 }

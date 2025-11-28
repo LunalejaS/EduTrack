@@ -42,4 +42,18 @@ export class UsuariosService {
     async findByRol(rol: string): Promise<Usuario[]>{
         return await this.usuarioRepositorio.find({ where: { rol: rol as any}});
     }
+
+    //Eliminar Usuario
+    async remove(id: number) {
+    const usuario = await this.usuarioRepositorio.findOne({where: { id }});
+        if (!usuario) {
+            throw new NotFoundException(`No existe el usuario con id ${id}.`);
+        }
+        await this.usuarioRepositorio.remove(usuario);
+        return {
+            message: `Usuario con ID ${id} eliminado correctamente`,
+            usuario_eliminado: usuario,
+        };
+    }
+
 }
