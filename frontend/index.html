@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Plataforma Educativa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span class="brand-name">EduTrack</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link active" data-section="home">Inicio</a>
+                <a href="#" class="nav-link" data-section="courses">Cursos</a>
+                <a href="#" class="nav-link" data-section="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-section="profile">Perfil</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-secondary" id="btnLogin">Iniciar Sesión</button>
+                <button class="btn-primary" id="btnRegister">Registrarse</button>
+                <div class="user-menu hidden" id="userMenu">
+                    <button class="btn-user" id="btnUserMenu">
+                        <span id="userName">Usuario</span>
+                        <svg class="icon-sm" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu hidden" id="dropdownMenu">
+                        <a href="#" class="dropdown-item" data-section="profile">Mi Perfil</a>
+                        <a href="#" class="dropdown-item" data-section="dashboard">Dashboard</a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item" id="btnLogout">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="homeSection" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">Aprende sin límites</h1>
+                    <p class="hero-subtitle">Descubre cursos de alta calidad impartidos por los mejores profesores</p>
+                    <div class="hero-actions">
+                        <button class="btn-primary btn-lg" id="btnExplore">Explorar Cursos</button>
+                        <button class="btn-outline btn-lg" id="btnLearnMore">Saber Más</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-placeholder">
+                        <svg viewBox="0 0 200 200" fill="none">
+                            <circle cx="100" cy="100" r="80" fill="#E8F4FF"/>
+                            <path d="M60 90 L80 110 L120 70" stroke="#2563EB" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="container">
+                    <h2 class="section-title">¿Por qué EduTrack?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">Cursos de Calidad</h3>
+                            <p class="feature-description">Aprende de profesores expertos en diversas materias</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">Seguimiento</h3>
+                            <p class="feature-description">Monitorea tu progreso en tiempo real</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">Comunidad</h3>
+                            <p class="feature-description">Conecta con estudiantes y profesores</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="coursesSection" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Cursos Disponibles</h2>
+                    <div class="filter-tabs">
+                        <button class="tab-button active" data-filter="all">Todos</button>
+                        <button class="tab-button" data-filter="active">Activos</button>
+                        <button class="tab-button" data-filter="upcoming">Próximos</button>
+                    </div>
+                </div>
+                <div id="coursesList" class="courses-grid">
+                    <!-- Courses will be loaded here -->
+                    <div class="loading">Cargando cursos...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="section">
+            <div class="container">
+                <h2 class="section-title">Mi Dashboard</h2>
+                <div id="dashboardContent" class="dashboard-content">
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <p>Inicia sesión para ver tu dashboard</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profileSection" class="section">
+            <div class="container">
+                <h2 class="section-title">Mi Perfil</h2>
+                <div id="profileContent" class="profile-content">
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <p>Inicia sesión para ver tu perfil</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="form-error hidden" id="loginError"></div>
+                <button type="submit" class="btn-primary btn-block">Iniciar Sesión</button>
+            </form>
+            <p class="modal-footer">
+                ¿No tienes cuenta? <a href="#" id="switchToRegister">Regístrate</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Crear Cuenta</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName" class="form-label">Nombre Completo</label>
+                    <input type="text" id="registerName" class="form-input" placeholder="Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword" class="form-label">Contraseña</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="registerYear" class="form-label">Año de Ingreso (Estudiantes)</label>
+                    <input type="number" id="registerYear" class="form-input" placeholder="2024" min="2000" max="2030">
+                </div>
+                <div class="form-error hidden" id="registerError"></div>
+                <button type="submit" class="btn-primary btn-block">Crear Cuenta</button>
+            </form>
+            <p class="modal-footer">
+                ¿Ya tienes cuenta? <a href="#" id="switchToLogin">Inicia sesión</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Course Detail Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-lg">
+            <button class="modal-close">&times;</button>
+            <div id="courseDetailContent">
+                <!-- Course details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
