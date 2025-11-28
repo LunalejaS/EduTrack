@@ -1,59 +1,275 @@
-# EduTrack — Sistema de Gestión Académica
+# 💻✨ EduTrack - Sistema de Gestión Educativa
 
-**Autor:** Luna A. Sandoval
+**Autor:** Luna A. Sandoval 🩷
+**Versión:** 1.0
 
-**Versión:** 0.2
-
-Backend construido con NestJS, TypeORM y PostgreSQL, diseñado para gestionar usuarios, profesores, estudiantes, cursos e inscripciones.
-Incluye documentación con Swagger, validaciones con class-validator, DTOs estructurados y arquitectura basada en Módulo–Servicio–Controlador.
+Sistema completo de gestión educativa con autenticación basada en roles, gestión de cursos e inscripciones para estudiantes, profesores y administradores.
 
 ---
-## Tecnologías utilizadas
+## 🌷 Características
+### Autenticación y Autorización
+- Registro e inicio de sesión con JWT
+- Asignación automática de roles según email/dominio
+- Guards de autenticación y autorización por roles
+- Tokens con expiración de 1 hora
+### Gestión de Usuarios
+- Tres tipos de usuarios: **Estudiantes**, **Profesores** y **Administradores**
+- Dashboard personalizado según rol
+- Perfil de usuario con información específica por rol
+### Gestión de Cursos
+- CRUD completo de cursos
+- Asignación de profesores a cursos
+- Filtros: cursos activos, próximos, finalizados
+- Cupo máximo configurable (por defecto 20 estudiantes)
+- Fechas de inicio y fin
+### Sistema de Inscripciones
+- Estudiantes se inscriben a cursos (estado: PENDIENTE)
+- Profesor/Admin acepta o rechaza inscripciones
+- Asignación de notas (rango 0.0 - 5.0)
+- Estadísticas por curso
+- Límite de 5 cursos simultáneos por estudiante
+###  Características Adicionales
+- Validación de fechas (no inscribirse a cursos iniciados)
+- Ver estudiantes inscritos por curso
 
-- Node.js v11.01.10
-- NestJS
-- TypeScript
-- TypeORM
-- PostgreSQL
-- Swagger
-- class-validator / class-transformer
 
---
-## Requisitos previos
-Antes de iniciar, asegúrate de tener instalado:
-- Node.js (v11 o mayor)
-- NPM
-- PostgreSQL
-- Git
-- Nest CLI
+## 🌷Tecnologías
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
+[![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 
-  `npm i -g @nestjs/cli`
+| Tecnología | Descripción |
+|-----------|-------------|
+| **NestJS** | Framework backend progresivo |
+| **TypeScript** | Lenguaje de programación |
+| **TypeORM** | ORM para TypeScript/JavaScript |
+| **PostgreSQL** | Base de datos relacional |
+| **Passport JWT** | Autenticación con JWT |
+| **Class Validator** | Validación de DTOs |
+| **Swagger** | Documentación de API |
+| **Bcrypt** | Hash de contraseñas |
 
----
-## Instalación
-1. Clona el repositorio
 
-   `git clone <url-del-repo>`
-   `cd EduTrack`
-   
-3. Instala dependencias
-   `npm install`
-   
-4. Configura tu archivo `.env`
+## 🌷 Requisitos Previos
+Antes de comenzar, asegúrate de tener instalado:
+- **Node.js** ([Descargar](https://nodejs.org/))
+- **npm** (incluido con Node.js)
+- **PostgreSQL**([Descargar](https://www.postgresql.org/download/))
+- **Git** ([Descargar](https://git-scm.com/))
+### Verificar instalaciones:
+```bash
+node --version
+npm --version
+psql --version
+git --version
+```
 
-   Usa el archivo `.env.template incluido.`
+## 🌷 Instalación
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/tu-usuario/edutrack-backend.git
+cd edutrack-backend
+```
+### 2. Instalar dependencias
+```bash
+npm install
+```
+### 3. Crear base de datos PostgreSQL
 
-- ### Variables de Entorno
-  Crea un archivo `.env` basado en:
-      
-      .env.template
-      DB_HOST=
-      DB_PORT=
-      DB_USER=
-      DB_PASSWORD=
-      DB_NAME=
+Abre PostgreSQL y ejecuta:
+```sql
+CREATE DATABASE edutrack;
+```
+O desde la terminal:
+```bash
+psql -U postgres
+CREATE DATABASE edutrack;
+\q
+```
 
-      ADMIN_EMAILS=admin1@test.com,admin2@test.com
-      PORT=3000
 
-Edítalo con tus valores reales.
+## 🌷 Configuración
+### 1. Variables de entorno
+
+Crea un archivo `.env` en la raíz del proyecto:
+```bash
+touch .env
+```
+### 2. Configurar el archivo `.env`
+Copia y modifica según tu configuración:
+```env
+# Base de datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=tu_contraseña_postgresql
+DB_DATABASE=edutrack
+DB_SYNCHRONIZE=true
+DB_LOGGING=false
+# JWT
+JWT_SECRET=tu_clave_secreta_super_segura_cambiar_en_produccion
+# Roles automáticos
+# Emails de administradores (separados por comas)
+ADMIN_EMAILS=admin@edutrack.com,admin2@edutrack.com
+# Dominios de profesores (separados por comas)
+PROFESOR_DOMAINS=universidad.edu.co,colegio.edu.co
+# Entorno
+NODE_ENV=development
+```
+### 3. Configuración de roles automáticos
+**Reglas de asignación:**
+| Email/Dominio | Rol Asignado |
+|--------------|--------------|
+| Email en `ADMIN_EMAILS` | **ADMINISTRADOR** |
+| Dominio en `PROFESOR_DOMAINS` | **PROFESOR** |
+| Otros emails | **ESTUDIANTE** (por defecto) |
+**Ejemplos:**
+- `admin@edutrack.com` → ADMINISTRADOR
+- `maria@universidad.edu.co` → PROFESOR
+- `juan@gmail.com` → ESTUDIANTE
+
+
+## 🌷 Ejecución
+### Modo Desarrollo
+```bash
+npm run start:dev
+```
+La aplicación estará disponible en:
+- **API:** http://localhost:3000
+- **Swagger:** http://localhost:3000/api/docs
+### Modo Producción
+```bash
+# Compilar
+npm run build
+
+# Ejecutar
+npm run start:prod
+```
+### Otros comandos útiles
+```bash
+# Ejecutar en modo debug
+npm run start:debug
+# Linter
+npm run lint
+# Formatear código
+npm run format
+```
+
+
+## 🌷 Documentación API
+
+### Endpoints Principales
+#### Autenticación
+```http
+POST   /auth/register        # Registrar usuario
+POST   /auth/login           # Iniciar sesión
+```
+#### Usuarios
+```http
+GET    /usuarios/perfil              # Ver mi perfil
+GET    /usuarios/dashboard/info      # Dashboard personalizado
+GET    /usuarios                     # Listar todos (admin)
+GET    /usuarios/:id                 # Ver usuario (admin)
+```
+#### Cursos
+```http
+POST   /cursos                       # Crear curso (admin)
+GET    /cursos                       # Listar todos
+GET    /cursos/activos               # Cursos activos
+GET    /cursos/mis-cursos            # Mis cursos (profesor)
+GET    /cursos/:id                   # Ver curso
+PATCH  /cursos/:id                   # Actualizar curso
+DELETE /cursos/:id                   # Eliminar curso (admin)
+```
+#### Inscripciones
+```http
+POST   /inscripciones                        # Inscribirse (estudiante)
+GET    /inscripciones/mis-inscripciones      # Mis inscripciones
+GET    /inscripciones/curso/:cursoId         # Inscripciones de curso
+PATCH  /inscripciones/:id/estado             # Aceptar/rechazar
+PATCH  /inscripciones/:id/nota               # Asignar nota
+DELETE /inscripciones/:id                    # Eliminar inscripción
+```
+
+
+## 🌷 Estructura del Proyecto
+```
+edutrack-backend/
+├── src/
+│   ├── auth/                      # Módulo de autenticación
+│   │   ├── dto/                   # DTOs de auth
+│   │   ├── strategies/            # JWT Strategy
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.module.ts
+│   │
+│   ├── users/                     # Módulo de usuarios
+│   │   ├── entities/              # Entidades (Usuario, Estudiante, Profesor)
+│   │   ├── dto/                   # DTOs de usuarios
+│   │   ├── usuarios.controller.ts
+│   │   ├── usuarios.service.ts
+│   │   ├── estudiantes.service.ts
+│   │   ├── profesores.service.ts
+│   │   └── users.module.ts
+│   │
+│   ├── courses/                   # Módulo de cursos
+│   │   ├── entities/              # Entidad Curso
+│   │   ├── dto/                   # DTOs de cursos
+│   │   ├── cursos.controller.ts
+│   │   ├── cursos.service.ts
+│   │   └── courses.module.ts
+│   │
+│   ├── enrollments/               # Módulo de inscripciones
+│   │   ├── entities/              # Entidad Inscripcion
+│   │   ├── dto/                   # DTOs de inscripciones
+│   │   ├── enrollments.controller.ts
+│   │   ├── enrollments.service.ts
+│   │   └── enrollments.module.ts
+│   │
+│   ├── common/                    # Recursos compartidos
+│   │   ├── decorators/            # Decoradores personalizados
+│   │   │   ├── roles.decorator.ts
+│   │   │   └── current-user.decorator.ts
+│   │   └── guards/                # Guards de seguridad
+│   │       ├── auth.guard.ts
+│   │       └── roles.guard.ts
+│   │
+│   ├── enums/                     # Enumeraciones
+│   │   ├── rol-usuario.enum.ts
+│   │   ├── estado-inscripcion.enum.ts
+│   │   └── materia-profesor.enum.ts
+│   │
+│   ├── app.module.ts              # Módulo principal
+│   ├── main.ts                    # Punto de entrada
+│   └── ormconfig.ts               # Configuración TypeORM
+│
+├── .env                           # Variables de entorno (no subir a Git)
+├── .env.example                   # Ejemplo de variables de entorno
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+
+## 🌷 Roles y Permisos
+
+| Funcionalidad | Estudiante | Profesor | Administrador |
+|--------------|:----------:|:--------:|:-------------:|
+| Registrarse/Login | ✅ | ✅ | ✅ |
+| Ver perfil propio | ✅ | ✅ | ✅ |
+| Ver dashboard personalizado | ✅ | ✅ | ✅ |
+| Ver lista de cursos | ✅ | ✅ | ✅ |
+| Inscribirse a cursos | ✅ | ❌ | ❌ |
+| Ver mis inscripciones | ✅ | ❌ | ❌ |
+| Ver mis cursos (profesor) | ❌ | ✅ | ✅ |
+| Aceptar/rechazar inscripciones | ❌ | ✅ | ✅ |
+| Asignar notas | ❌ | ✅ | ✅ |
+| Crear cursos | ❌ | ❌ | ✅ |
+| Editar/eliminar cursos | ❌ | ✅* | ✅ |
+| Ver todos los usuarios | ❌ | ❌ | ✅ |
+| Asignar profesores a cursos | ❌ | ❌ | ✅ |
+
+*El profesor solo puede editar sus propios cursos
