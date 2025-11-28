@@ -318,3 +318,6 @@ edutrack-backend/
 
 ### Obtener cursos de un profesor especifico
 <img width="1917" height="1132" alt="image" src="https://github.com/user-attachments/assets/a2cf4110-d0e1-4d3d-87e4-7395cd29850f" />
+
+### Ver estudiantes inscritos en un curso
+<img width="1917" height="1144" alt="image" src="https://github.com/user-attachments/assets/b88369fc-1cb1-44f2-b953-8b202a3799d7" />
