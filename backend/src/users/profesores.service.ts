@@ -41,6 +41,9 @@ export class ProfesoresService {
         throw new NotFoundException(`El profesor con usuario ID ${userId} no fue encontrado.`);
     }
 
-    return this.profesoresRepository.remove(profesor);
+    await this.profesoresRepository.remove(profesor);
+    return {
+        message: "Profesor Eliminado con éxito."
+    }
 }
 }

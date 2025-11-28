@@ -41,6 +41,9 @@ export class EstudiantesService {
         throw new NotFoundException(`El estudiante con usuario ID ${userId} no fue encontrado.`);
     }
 
-    return this.estudiantesRepository.remove(estudiante);
+    await this.estudiantesRepository.remove(estudiante);
+    return {
+        message: "Estudiante eliminado con éxito."
+    }
 }
 }
