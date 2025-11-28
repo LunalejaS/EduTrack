@@ -199,6 +199,26 @@
                     <label for="registerYear" class="form-label">Año de Ingreso (Estudiantes)</label>
                     <input type="number" id="registerYear" class="form-input" placeholder="2024" min="2000" max="2030">
                 </div>
+                <div class="form-group">
+                    <label for="registerSpecialty" class="form-label">Especialidad (Profesores)</label>
+                    <select type="select" id="registerSpecialty"  class="form-input">
+                        <option value="">Seleccione una especialidad</option>
+                        <option value="matemáticas">Matemáticas</option>
+                        <option value="español">Español</option>
+                        <option value="biología">Biología</option>
+                        <option value="física">Física</option>
+                        <option value="química">Química</option>
+                        <option value="inglés">Inglés</option>
+                        <option value="historia">Historia</option>
+                        <option value="geografía">Geografía</option>
+                        <option value="educación física">Educación Física</option>
+                        <option value="informática">Informática</option>
+                        <option value="filosofía">Filosofía</option>
+                        <option value="artes plasticas">Artes Plásticas</option>
+                        <option value="música">Música</option>
+                    </select>
+                </div>
+
                 <div class="form-error hidden" id="registerError"></div>
                 <button type="submit" class="btn-primary btn-block">Crear Cuenta</button>
             </form>

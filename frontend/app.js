@@ -193,12 +193,23 @@ async function handleRegister(e) {
     const email = document.getElementById('registerEmail').value;
     const contrasena = document.getElementById('registerPassword').value;
     const ano_ingreso = document.getElementById('registerYear').value || new Date().getFullYear().toString();
+    const especialidad = document.getElementById('registerSpecialty');
+
+    // Si el usuario selecciona especialidad (profesor):
+    if (especialidad && especialidad.options.length === 0) {
+        Object.values(MateriasProfesor).forEach(materia => {
+            const option = document.createElement('option');
+            option.value = materia;
+            option.textContent = materia.charAt(0).toUpperCase() + materia.slice(1);
+            especialidad.appendChild(option);
+        });
+    }
     
     try {
         const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre_completo, email, contrasena, ano_ingreso })
+            body: JSON.stringify({ nombre_completo, email, contrasena, ano_ingreso, especialidad})
         });
         
         const data = await response.json();
@@ -215,6 +226,22 @@ async function handleRegister(e) {
         showError('registerError', 'Error al conectar con el servidor');
     }
 }
+
+const MateriasProfesor = {
+    MATEMATICAS: 'matemáticas',
+    ESPANOL: 'español',
+    BIOLOGIA: 'biología',
+    FISICA: 'física',
+    QUIMICA: 'química',
+    INGLES: 'inglés',
+    HISTORIA: 'historia',
+    GEOGRAFIA: 'geografía',
+    EDUCACION_FISICA: 'educación física',
+    INFORMATICA: 'informática',
+    FILOSOFIA: 'filosofía',
+    ARTES_PLASTICAS: 'artes plasticas',
+    MUSICA: 'música',
+};
 
 function logout() {
     state.user = null;
