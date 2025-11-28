@@ -168,10 +168,13 @@ POST   /auth/login           # Iniciar sesión
 ```
 #### Usuarios
 ```http
-GET    /usuarios/perfil              # Ver mi perfil
-GET    /usuarios/dashboard/info      # Dashboard personalizado
-GET    /usuarios                     # Listar todos (admin)
-GET    /usuarios/:id                 # Ver usuario (admin)
+GET    /usuarios/perfil                # Ver mi perfil
+GET    /usuarios/dashboard/info        # Dashboard personalizado
+GET    /usuarios                       # Listar todos (admin)
+GET    /usuarios/:id                   # Ver usuario (admin)
+DELETE /usuarios/remove/estudiante/:id # Eliminar estudiante (admin, profesor)
+DELETE /usuarios/remove/profesor/:id   # Eliminar profesor (admin)
+DELETE /usuarios/remove/:id            # Eliminar usuario (admin)
 ```
 #### Cursos
 ```http
